@@ -7,213 +7,251 @@
     <style>
         :root { 
             --muscle: #e67e22; --nerve: #f1c40f; 
-            --vessel: #e74c3c; --other: #95a5a6; --main: #2c3e50; 
+            --vessel: #e74c3c; --other: #95a5a6; --main: #2c3e50;
+            --green: #27ae60; --teal: #1abc9c;
         }
         * { box-sizing: border-box; }
         body { font-family: "Microsoft JhengHei", sans-serif; margin: 0; background: #f4f7f6; display: flex; }
 
-        /* ── 側邊欄 ── */
+        /* ══ 側邊欄 ══════════════════════════════════ */
         nav { 
-            width: 250px; background: var(--main); color: white; 
-            height: 100vh; padding: 20px; position: fixed; left: 0; top: 0;
-            display: flex; flex-direction: column; overflow-y: auto;
+            width: 260px; background: var(--main); color: white; 
+            height: 100vh; padding: 15px; position: fixed; left: 0; top: 0;
+            display: flex; flex-direction: column; overflow: hidden;
         }
-        nav h2 { border-bottom: 1px solid #555; padding-bottom: 10px; margin-top: 0; font-size: 1rem; }
-        nav ul { list-style: none; padding: 0; margin: 0; }
-        nav li { padding: 10px 12px; cursor: pointer; border-radius: 4px; transition: 0.3s; font-size: 0.85rem; }
-        nav li:hover { background: #34495e; }
-        nav li.active-region { background: #1abc9c; }
+        nav h2 { border-bottom: 1px solid #455a6a; padding-bottom: 8px; margin: 0 0 10px; font-size: 0.95rem; }
+        
+        /* 地區清單 */
+        #region-list { list-style: none; padding: 0; margin: 0 0 10px; }
+        #region-list li { padding: 9px 10px; cursor: pointer; border-radius: 4px; transition: 0.2s; font-size: 0.82rem; }
+        #region-list li:hover { background: #34495e; }
+        #region-list li.active-region { background: var(--teal); }
 
+        /* Drive 按鈕 */
         .drive-btn {
-            display: block; margin: 10px 0; padding: 10px;
-            background: #27ae60; color: white; text-decoration: none;
-            border-radius: 6px; text-align: center; font-size: 0.85rem;
-            transition: 0.3s;
+            display: block; padding: 8px; background: var(--green); color: white;
+            text-decoration: none; border-radius: 6px; text-align: center;
+            font-size: 0.82rem; transition: 0.2s; margin-bottom: 4px;
         }
         .drive-btn:hover { background: #219a52; }
+        .drive-hint { font-size: 0.7rem; color: #95a5a6; margin: 0 0 10px; }
 
-        .user-box { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: auto; text-align: center; }
+        /* 公告區 */
+        .announce-header {
+            background: #34495e; padding: 8px 10px; border-radius: 6px 6px 0 0;
+            font-size: 0.82rem; font-weight: bold; display: flex; align-items: center; gap: 6px;
+        }
+        .announce-scroll {
+            flex: 1; overflow-y: auto; background: #1e2d3d;
+            border-radius: 0 0 6px 6px; min-height: 0;
+        }
+        .announce-item-nav {
+            padding: 8px 10px; border-bottom: 1px solid #2c3e50;
+            font-size: 0.75rem; cursor: pointer; transition: 0.2s;
+            line-height: 1.4;
+        }
+        .announce-item-nav:hover { background: #34495e; }
+        .announce-item-nav:last-child { border-bottom: none; }
+        .announce-item-nav .a-user { color: var(--teal); font-weight: bold; }
+        .announce-item-nav .a-card { color: #f39c12; }
+        .announce-item-nav .a-time { color: #7f8c8d; font-size: 0.68rem; display: block; margin-top: 2px; }
+        .announce-empty-nav { padding: 15px 10px; text-align: center; color: #555; font-size: 0.78rem; }
 
-        /* ── 主畫面 ── */
-        main { margin-left: 250px; flex-grow: 1; min-height: 100vh; display: flex; flex-direction: column; }
+        /* 登入框 */
+        .user-box { background: rgba(255,255,255,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; text-align: center; flex-shrink: 0; }
 
-        /* ── 頂部篩選 ── */
+        /* ══ 主畫面 ══════════════════════════════════ */
+        main { margin-left: 260px; flex-grow: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* 頂部篩選 */
         .top-filter {
-            position: sticky; top: 0; z-index: 100;
-            background: white; padding: 12px 25px;
-            display: flex; gap: 10px; flex-wrap: wrap;
+            position: sticky; top: 0; z-index: 100; background: white;
+            padding: 10px 20px; display: flex; gap: 8px; flex-wrap: wrap;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-items: center;
         }
         .filter-btn {
-            padding: 7px 18px; border: 1px solid #ddd; border-radius: 20px;
-            cursor: pointer; background: white; font-weight: bold; transition: 0.3s; font-size: 0.85rem;
+            padding: 6px 16px; border: 1px solid #ddd; border-radius: 20px;
+            cursor: pointer; background: white; font-weight: bold; transition: 0.2s; font-size: 0.82rem;
         }
         .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
+        .filter-btn.star-btn.active { background: #f39c12; border-color: #f39c12; }
+        .quiz-start-btn {
+            margin-left: auto; padding: 6px 18px; background: var(--teal);
+            color: white; border: none; border-radius: 20px; cursor: pointer;
+            font-weight: bold; font-size: 0.82rem; transition: 0.2s;
+        }
+        .quiz-start-btn:hover { background: #16a085; }
 
-        /* ── 公告專區 ── */
-        .announce-section {
-            margin: 20px 25px 0; background: white; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden;
-        }
-        .announce-header {
-            background: var(--main); color: white; padding: 12px 18px;
-            font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
-        }
-        .announce-list { max-height: 200px; overflow-y: auto; }
-        .announce-item {
-            padding: 10px 18px; border-bottom: 1px solid #f0f0f0;
-            font-size: 0.85rem; display: flex; justify-content: space-between;
-            align-items: center; gap: 10px; transition: background 0.2s;
-        }
-        .announce-item:hover { background: #f8f9fa; }
-        .announce-item:last-child { border-bottom: none; }
-        .announce-item .announce-text { flex: 1; }
-        .announce-item .announce-text b { color: #1abc9c; }
-        .announce-item .announce-time { color: #95a5a6; font-size: 0.75rem; flex-shrink: 0; }
-        .announce-link-btn {
-            padding: 3px 10px; font-size: 0.75rem; background: var(--main);
-            color: white; border: none; border-radius: 4px; cursor: pointer; flex-shrink: 0;
-        }
-        .announce-empty { padding: 20px; text-align: center; color: #95a5a6; font-size: 0.85rem; }
-
-        /* ── 卡片區 ── */
-        .container { padding: 20px 25px 30px; }
-        .card-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
-        }
+        /* ══ 卡片區 ══════════════════════════════════ */
+        .container { padding: 15px 20px 30px; }
+        .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         @media (max-width: 1400px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 1000px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px)  { .card-grid { grid-template-columns: 1fr; } }
 
-        .card-container { perspective: 1000px; min-height: 175px; }
+        .card-container { perspective: 1000px; min-height: 170px; }
         .card { 
-            width: 100%; height: 100%; min-height: 175px;
+            width: 100%; height: 100%; min-height: 170px;
             transition: transform 0.6s; transform-style: preserve-3d; 
             cursor: pointer; position: relative; 
         }
         .card.flipped { transform: rotateY(180deg); }
         .card-front, .card-back {
-            position: absolute; width: 100%; min-height: 175px;
+            position: absolute; width: 100%; min-height: 170px;
             backface-visibility: hidden; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
+            padding: 12px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); text-align: center;
         }
-        .card-front { background: white; border-bottom: 5px solid var(--main); }
-        .card-back { background: var(--main); color: white; transform: rotateY(180deg); }
+        .card-front { background: white; border-bottom: 4px solid var(--main); }
+        .card-back  { background: var(--main); color: white; transform: rotateY(180deg); }
         .card-front h3, .card-back h3 { 
-            margin: 8px 0; padding: 0 8px;
-            word-break: break-word; font-size: clamp(0.8rem, 1.4vw, 1rem);
+            margin: 6px 0; padding: 0 8px;
+            word-break: break-word; font-size: clamp(0.78rem, 1.3vw, 0.98rem);
         }
         .badge { 
-            position: absolute; top: 10px; right: 10px; font-size: 0.65rem; 
-            color: white; padding: 2px 7px; border-radius: 5px; 
+            position: absolute; top: 8px; right: 8px; font-size: 0.62rem; 
+            color: white; padding: 2px 6px; border-radius: 4px; 
         }
-        .card-back .note-count {
-            font-size: 0.75rem; opacity: 0.7; margin-bottom: 5px;
+        .star-icon {
+            position: absolute; top: 8px; left: 8px; font-size: 1rem; cursor: pointer;
+            background: none; border: none; padding: 0; line-height: 1;
+            transition: transform 0.2s;
         }
+        .star-icon:hover { transform: scale(1.3); }
+        .card-meta { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
 
-        /* ── Loading / Empty ── */
+        /* Loading / Empty */
         .loading-state, .empty-state {
-            grid-column: 1/-1; text-align: center; padding: 80px; color: #95a5a6;
+            grid-column: 1/-1; text-align: center; padding: 60px; color: #95a5a6;
         }
         .spinner {
-            width: 40px; height: 40px; border: 4px solid #ddd;
+            width: 36px; height: 36px; border: 4px solid #ddd;
             border-top-color: var(--main); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite; margin: 0 auto 15px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── Modal ── */
+        /* ══ 留言 Modal ══════════════════════════════ */
         .modal { 
             display: none; position: fixed; z-index: 1000; 
             left: 0; top: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.7); 
         }
         .modal-content { 
-            background: white; margin: 3% auto; padding: 25px; 
+            background: white; margin: 3% auto; padding: 22px; 
             width: 90%; max-width: 520px; border-radius: 15px; 
         }
-        .modal-content h2 { margin-top: 0; font-size: 1.1rem; }
-
-        /* 留言項目 */
+        .modal-content h2 { margin-top: 0; font-size: 1.05rem; }
         .comment-item { 
-            background: #f0f2f5; padding: 10px 12px; border-radius: 8px; 
-            margin-bottom: 10px; font-size: 0.88rem; text-align: left;
+            background: #f5f6f8; padding: 10px 12px; border-radius: 8px; 
+            margin-bottom: 8px; font-size: 0.85rem; text-align: left;
         }
-        .comment-item .comment-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 5px;
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap; gap: 4px; }
+        .comment-user { font-weight: bold; color: var(--main); }
+        .comment-time { font-size: 0.72rem; color: #95a5a6; }
+        .delete-btn { background: none; border: none; cursor: pointer; color: #e74c3c; font-size: 0.75rem; padding: 0; }
+        .delete-btn:hover { text-decoration: underline; }
+        .comment-body { word-break: break-word; }
+        .comment-footer { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .like-btn { 
+            background: none; border: 1px solid #ddd; border-radius: 20px;
+            padding: 2px 10px; cursor: pointer; font-size: 0.78rem; 
+            transition: 0.2s; display: flex; align-items: center; gap: 4px;
         }
-        .comment-item .comment-user { font-weight: bold; color: var(--main); }
-        .comment-item .comment-time { font-size: 0.75rem; color: #95a5a6; }
-        .comment-item .delete-btn {
-            background: none; border: none; cursor: pointer;
-            color: #e74c3c; font-size: 0.78rem; padding: 0; margin-left: 8px;
-        }
-        .comment-item .delete-btn:hover { text-decoration: underline; }
-        .comment-item .comment-body { word-break: break-word; }
+        .like-btn:hover { background: #fff3e0; border-color: #f39c12; }
+        .like-btn.liked { background: #fff3e0; border-color: #f39c12; color: #e67e22; }
 
-        /* 媒體顯示 */
-        .comment-item img { 
-            max-width: 100%; border-radius: 6px; margin-top: 6px; 
-            cursor: pointer; display: block;
-        }
-        .comment-item iframe { 
-            width: 100%; height: 200px; border: none; 
-            border-radius: 6px; margin-top: 6px; display: block;
-        }
-        .comment-item .drive-preview {
-            display: flex; align-items: center; gap: 8px;
-            background: #e8f5e9; padding: 8px 10px; border-radius: 6px;
-            margin-top: 6px; text-decoration: none; color: #27ae60; font-size: 0.82rem;
+        /* 媒體 */
+        .comment-item img { max-width: 100%; border-radius: 6px; margin-top: 6px; cursor: pointer; display: block; }
+        .comment-item iframe { width: 100%; height: 195px; border: none; border-radius: 6px; margin-top: 6px; display: block; }
+        .drive-preview-link {
+            display: flex; align-items: center; gap: 8px; background: #e8f5e9;
+            padding: 7px 10px; border-radius: 6px; margin-top: 6px;
+            text-decoration: none; color: #27ae60; font-size: 0.8rem;
         }
 
         /* 輸入區 */
-        .input-area { margin-top: 12px; }
-        .input-area .hint {
-            font-size: 0.75rem; color: #95a5a6; margin-bottom: 6px;
-        }
+        .input-hint { font-size: 0.72rem; color: #95a5a6; margin-bottom: 5px; }
         .input-row { display: flex; gap: 8px; }
-        .input-row input {
-            flex: 1; padding: 10px; border: 1px solid #ddd; 
-            border-radius: 5px; outline: none; font-size: 0.9rem;
+        .input-row input { flex: 1; padding: 9px; border: 1px solid #ddd; border-radius: 5px; outline: none; font-size: 0.88rem; }
+        .input-row button { padding: 9px 16px; background: var(--main); color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .close-btn { width: 100%; margin-top: 10px; padding: 9px; border: none; background: #eee; cursor: pointer; border-radius: 5px; }
+
+        /* ══ 測驗 Modal ══════════════════════════════ */
+        #quizModal .modal-content { max-width: 560px; }
+        .quiz-progress { 
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 15px; font-size: 0.85rem; color: #666;
         }
-        .input-row button {
-            padding: 10px 18px; background: var(--main); color: white; 
-            border: none; border-radius: 5px; cursor: pointer; white-space: nowrap;
+        .quiz-progress-bar { 
+            height: 6px; background: #eee; border-radius: 3px; margin-bottom: 18px; overflow: hidden;
         }
-        .close-btn {
-            width: 100%; margin-top: 12px; padding: 10px; 
-            border: none; background: #eee; cursor: pointer; border-radius: 5px;
+        .quiz-progress-fill { height: 100%; background: var(--teal); transition: width 0.4s; }
+        .quiz-question { 
+            font-size: 1.5rem; font-weight: bold; text-align: center; 
+            margin: 20px 0; color: var(--main); min-height: 60px;
+        }
+        .quiz-question .quiz-type-label { 
+            font-size: 0.75rem; color: #95a5a6; font-weight: normal; display: block; margin-bottom: 5px;
+        }
+        .quiz-input { 
+            width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #ddd; 
+            border-radius: 8px; outline: none; text-align: center; margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+        .quiz-input:focus { border-color: var(--main); }
+        .quiz-btns { display: flex; gap: 10px; margin-bottom: 10px; }
+        .quiz-btn-correct { 
+            flex: 1; padding: 12px; background: var(--green); color: white; 
+            border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold;
+        }
+        .quiz-btn-wrong { 
+            flex: 1; padding: 12px; background: #e74c3c; color: white; 
+            border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold;
+        }
+        .quiz-btn-mark { 
+            width: 100%; padding: 8px; background: #fff3e0; color: #e67e22;
+            border: 1px solid #f39c12; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+            margin-bottom: 8px; transition: 0.2s;
+        }
+        .quiz-btn-mark.marked { background: #f39c12; color: white; }
+        .quiz-answer-reveal { 
+            background: #f0f2f5; padding: 10px; border-radius: 8px; 
+            text-align: center; margin-bottom: 12px; font-size: 0.9rem; display: none;
+        }
+        .quiz-exit-btn { 
+            width: 100%; padding: 8px; background: none; border: 1px solid #ddd; 
+            border-radius: 6px; cursor: pointer; color: #666; font-size: 0.82rem;
         }
 
-        /* ── Toast ── */
+        /* 測驗結果 */
+        .quiz-result { text-align: center; padding: 10px 0; }
+        .quiz-score { font-size: 3rem; font-weight: bold; color: var(--main); margin: 10px 0; }
+        .quiz-score-sub { color: #666; font-size: 0.9rem; }
+        .quiz-result-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .quiz-result-btns button { flex: 1; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* ══ Toast ════════════════════════════════════ */
         .toast {
-            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
-            background: #2c3e50; color: white; padding: 12px 20px;
-            border-radius: 8px; font-size: 0.9rem;
+            position: fixed; bottom: 25px; right: 25px; z-index: 9999;
+            background: #2c3e50; color: white; padding: 10px 18px;
+            border-radius: 8px; font-size: 0.88rem;
             transform: translateY(100px); opacity: 0; transition: all 0.3s ease;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.error { background: #e74c3c; }
+        .toast.error   { background: #e74c3c; }
         .toast.success { background: #27ae60; }
 
-        /* 圖片燈箱 */
-        .lightbox {
-            display: none; position: fixed; z-index: 9998;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); align-items: center; justify-content: center;
-        }
+        /* 燈箱 */
+        .lightbox { display: none; position: fixed; z-index: 9998; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
         .lightbox.show { display: flex; }
         .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; }
-        .lightbox-close { 
-            position: absolute; top: 20px; right: 30px; color: white; 
-            font-size: 2rem; cursor: pointer;
-        }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<!-- ══ 側邊欄 ══ -->
 <nav>
     <h2>📍 解剖部位</h2>
     <ul id="region-list">
@@ -224,19 +262,22 @@
         <li data-region="5">5. 手部</li>
     </ul>
 
-    <div style="margin-top: 15px;">
-        <p style="font-size:0.8rem; color:#95a5a6; margin:0 0 5px;">📁 共用素材資料夾</p>
-        <a class="drive-btn" href="https://drive.google.com/drive/folders/15K0Z4mQYISFuY5FuCQBcBwY1mVBTjcrX?usp=sharing" target="_blank">
-            📂 開啟 Google Drive
-        </a>
-        <p style="font-size:0.72rem; color:#95a5a6; margin:4px 0 0;">上傳圖片／影片後，複製連結貼入留言即可顯示</p>
+    <a class="drive-btn" href="https://drive.google.com/drive/folders/15K0Z4mQYISFuY5FuCQBcBwY1mVBTjcrX?usp=sharing" target="_blank">
+        📂 共用 Google Drive
+    </a>
+    <p class="drive-hint">上傳圖片／影片後複製連結貼入留言</p>
+
+    <div class="announce-header">📢 最新動態</div>
+    <div class="announce-scroll" id="announce-scroll">
+        <div class="announce-empty-nav">暫無動態</div>
     </div>
 
     <div class="user-box" id="user-info">
-        <p>檢查狀態中...</p>
+        <p style="margin:0; font-size:0.85rem;">檢查狀態中...</p>
     </div>
 </nav>
 
+<!-- ══ 主畫面 ══ -->
 <main>
     <div class="top-filter">
         <button class="filter-btn active" data-cat="全部">全部</button>
@@ -244,14 +285,8 @@
         <button class="filter-btn" data-cat="Nerves">神經</button>
         <button class="filter-btn" data-cat="Vessel">血管</button>
         <button class="filter-btn" data-cat="Other">其他</button>
-    </div>
-
-    <!-- 公告專區 -->
-    <div class="announce-section" id="announce-section" style="display:none;">
-        <div class="announce-header">📢 最新動態</div>
-        <div class="announce-list" id="announce-list">
-            <div class="announce-empty">暫無動態</div>
-        </div>
+        <button class="filter-btn star-btn" data-cat="不熟">⭐ 不熟</button>
+        <button class="quiz-start-btn" id="quiz-start-btn">🎯 開始測驗</button>
     </div>
 
     <div class="container">
@@ -264,23 +299,28 @@
     </div>
 </main>
 
-<!-- 留言 Modal -->
+<!-- ══ 留言 Modal ══ -->
 <div id="commentModal" class="modal">
     <div class="modal-content">
         <h2 id="modal-title"></h2>
-        <div id="comments-list" style="max-height: 320px; overflow-y: auto; margin: 12px 0;"></div>
-        <div class="input-area">
-            <div class="hint">💡 可貼入文字、Google Drive 圖片／影片連結、YouTube 連結</div>
-            <div class="input-row">
-                <input type="text" id="comment-input" placeholder="新增筆記或貼入連結...">
-                <button id="send-btn">送出</button>
-            </div>
+        <div id="comments-list" style="max-height:300px; overflow-y:auto; margin:10px 0;"></div>
+        <div class="input-hint">💡 可貼入文字、Google Drive 連結（圖片／影片）、YouTube 連結</div>
+        <div class="input-row">
+            <input type="text" id="comment-input" placeholder="新增筆記或貼入連結...">
+            <button id="send-btn">送出</button>
         </div>
         <button class="close-btn" id="close-modal-btn">關閉</button>
     </div>
 </div>
 
-<!-- 圖片燈箱 -->
+<!-- ══ 測驗 Modal ══ -->
+<div id="quizModal" class="modal">
+    <div class="modal-content">
+        <div id="quiz-body"></div>
+    </div>
+</div>
+
+<!-- 燈箱 -->
 <div class="lightbox" id="lightbox">
     <span class="lightbox-close" id="lightbox-close">✕</span>
     <img id="lightbox-img" src="" alt="">
@@ -293,7 +333,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
     getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove,
-    addDoc, query, orderBy, limit
+    addDoc, query, orderBy, limit, setDoc, getDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { 
     getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
@@ -309,89 +349,63 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db  = getFirestore(app);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-let allData = [];
-let currentFilter = '全部';
-let currentRegion = null;
-let currentUser = null;
-let activeCardId = null;
+let allData      = [];
+let currentFilter  = '全部';
+let currentRegion  = null;
+let currentUser    = null;
+let activeCardId   = null;
+let myBookmarks    = new Set();   // 不熟標記
+let quizState      = null;        // 測驗狀態
 
-// ── Toast ──────────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────
 function showToast(msg, type = '') {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.className = `toast ${type} show`;
-    setTimeout(() => { toast.className = 'toast'; }, 3000);
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => { t.className = 'toast'; }, 3000);
 }
 
-// ── 時間格式化 ─────────────────────────────────────────
+// ── 時間格式 ──────────────────────────────────────────────
 function formatTime(ts) {
     if (!ts) return '';
     const d = ts.toDate ? ts.toDate() : new Date(ts);
-    const pad = n => String(n).padStart(2, '0');
-    return `${d.getMonth()+1}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const p = n => String(n).padStart(2,'0');
+    return `${d.getMonth()+1}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-// ── 連結類型偵測 ────────────────────────────────────────
-function detectLinkType(text) {
+// ── 連結偵測 ──────────────────────────────────────────────
+function detectLink(text) {
     if (!text) return 'text';
     const t = text.trim();
-    // YouTube
     if (/youtube\.com\/watch|youtu\.be\//.test(t)) return 'youtube';
-    // Google Drive 影片（常見副檔名）
-    if (/drive\.google\.com/.test(t) && /\.(mp4|mov|avi|mkv)/i.test(t)) return 'drive-video';
-    // Google Drive 圖片
-    if (/drive\.google\.com/.test(t) && /\.(jpg|jpeg|png|gif|webp)/i.test(t)) return 'drive-image';
-    // Google Drive 一般連結
-    if (/drive\.google\.com/.test(t)) return 'drive-link';
-    // 直接圖片網址
+    if (/drive\.google\.com/.test(t)) return 'drive';
     if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(t)) return 'image';
-    // 普通網址
     if (/^https?:\/\//.test(t)) return 'link';
     return 'text';
 }
-
-// ── 取得 YouTube embed URL ──────────────────────────────
-function getYouTubeEmbedUrl(url) {
-    let id = '';
-    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
-    if (match) id = match[1];
-    return id ? `https://www.youtube.com/embed/${id}` : null;
+function ytEmbed(url) {
+    const m = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    return m ? `https://www.youtube.com/embed/${m[1]}` : null;
 }
-
-// ── 取得 Google Drive 嵌入 URL ─────────────────────────
-function getDriveEmbedUrl(url) {
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://drive.google.com/file/d/${match[1]}/preview`;
-    const match2 = url.match(/id=([a-zA-Z0-9_-]+)/);
-    if (match2) return `https://drive.google.com/file/d/${match2[1]}/preview`;
-    return null;
+function driveEmbed(url) {
+    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : null;
 }
-
-// ── 渲染留言內容（含媒體偵測）──────────────────────────
-function renderCommentContent(text) {
-    const type = detectLinkType(text);
+function renderContent(text) {
+    const type = detectLink(text);
     if (type === 'youtube') {
-        const embedUrl = getYouTubeEmbedUrl(text);
-        return embedUrl 
-            ? `<div class="comment-body"><a href="${text}" target="_blank">${text}</a><br><iframe src="${embedUrl}" allowfullscreen></iframe></div>`
-            : `<div class="comment-body"><a href="${text}" target="_blank">${text}</a></div>`;
+        const e = ytEmbed(text);
+        return e ? `<div class="comment-body"><iframe src="${e}" allowfullscreen></iframe></div>`
+                 : `<div class="comment-body"><a href="${text}" target="_blank">${text}</a></div>`;
     }
-    if (type === 'drive-video' || type === 'drive-link') {
-        const embedUrl = getDriveEmbedUrl(text);
-        if (embedUrl) {
-            return `<div class="comment-body"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
-        }
-        return `<div class="comment-body"><a class="drive-preview" href="${text}" target="_blank">📁 開啟 Google Drive 檔案</a></div>`;
-    }
-    if (type === 'drive-image') {
-        const embedUrl = getDriveEmbedUrl(text);
-        if (embedUrl) {
-            return `<div class="comment-body"><img src="${embedUrl}" onclick="window.openLightbox('${embedUrl}')"></div>`;
-        }
+    if (type === 'drive') {
+        const e = driveEmbed(text);
+        return e ? `<div class="comment-body"><iframe src="${e}" allowfullscreen></iframe></div>`
+                 : `<div class="comment-body"><a class="drive-preview-link" href="${text}" target="_blank">📁 開啟 Google Drive 檔案</a></div>`;
     }
     if (type === 'image') {
         return `<div class="comment-body"><img src="${text}" onclick="window.openLightbox('${text}')"></div>`;
@@ -402,60 +416,108 @@ function renderCommentContent(text) {
     return `<div class="comment-body">${text}</div>`;
 }
 
-// ── 燈箱 ───────────────────────────────────────────────
+// ── 燈箱 ─────────────────────────────────────────────────
 window.openLightbox = (src) => {
     document.getElementById('lightbox-img').src = src;
     document.getElementById('lightbox').classList.add('show');
 };
-document.getElementById('lightbox-close').onclick = () => {
-    document.getElementById('lightbox').classList.remove('show');
-};
-document.getElementById('lightbox').onclick = (e) => {
-    if (e.target === document.getElementById('lightbox')) {
-        document.getElementById('lightbox').classList.remove('show');
-    }
-};
+document.getElementById('lightbox-close').onclick = () => document.getElementById('lightbox').classList.remove('show');
+document.getElementById('lightbox').onclick = (e) => { if (e.target.id === 'lightbox') document.getElementById('lightbox').classList.remove('show'); };
 
-// ── 登入狀態 ────────────────────────────────────────────
-onAuthStateChanged(auth, (user) => {
-    const userInfoBox = document.getElementById('user-info');
+// ── 登入 ─────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+    const box = document.getElementById('user-info');
     if (user) {
         currentUser = user;
-        userInfoBox.innerHTML = `
-            <img src="${user.photoURL}" style="width:35px; border-radius:50%; border:2px solid white;"><br>
-            <small>${user.displayName}</small><br>
-            <button id="logout-btn" style="margin-top:5px; cursor:pointer; padding:2px 8px; border-radius:4px;">登出</button>
+        box.innerHTML = `
+            <img src="${user.photoURL}" style="width:32px;border-radius:50%;border:2px solid white;"><br>
+            <small style="font-size:0.78rem;">${user.displayName}</small><br>
+            <button id="logout-btn" style="margin-top:4px;cursor:pointer;padding:2px 8px;border-radius:4px;font-size:0.78rem;">登出</button>
         `;
         document.getElementById('logout-btn').onclick = () => signOut(auth);
+        await loadBookmarks();
         loadData();
         loadAnnouncements();
+        loadQuizState();
     } else {
         currentUser = null;
-        userInfoBox.innerHTML = `
-            <button id="login-btn" style="width:100%; padding:10px; cursor:pointer; border-radius:5px;">
-                🔑 Google 登入
-            </button>
-        `;
+        myBookmarks.clear();
+        box.innerHTML = `<button id="login-btn" style="width:100%;padding:9px;cursor:pointer;border-radius:5px;font-size:0.85rem;">🔑 Google 登入</button>`;
         document.getElementById('login-btn').onclick = () => {
-            signInWithPopup(auth, provider).catch(() => {
-                showToast('登入失敗，請確認 Firebase Authentication 已啟用 Google 提供者！', 'error');
-            });
+            signInWithPopup(auth, provider).catch(() => showToast('登入失敗！', 'error'));
         };
-        document.getElementById('card-grid').innerHTML = `
-            <div class="loading-state">
-                <h2>🔒 已鎖定內容</h2>
-                <p>請點擊左側按鈕登入</p>
-            </div>`;
-        document.getElementById('announce-section').style.display = 'none';
+        document.getElementById('card-grid').innerHTML = `<div class="loading-state"><h2>🔒 已鎖定內容</h2><p>請點擊左側按鈕登入</p></div>`;
     }
 });
 
-// ── 載入單字卡資料 ──────────────────────────────────────
-function loadData() {
-    document.getElementById('card-grid').innerHTML = `
-        <div class="loading-state"><div class="spinner"></div><p>載入中...</p></div>`;
+// ══ 不熟標記 ══════════════════════════════════════════════
+async function loadBookmarks() {
+    try {
+        const snap = await getDoc(doc(db, 'bookmarks', currentUser.uid));
+        myBookmarks = new Set(snap.exists() ? (snap.data().cards || []) : []);
+    } catch(e) { myBookmarks = new Set(); }
+}
+async function toggleBookmark(cardId) {
+    if (!currentUser) return;
+    const had = myBookmarks.has(cardId);
+    had ? myBookmarks.delete(cardId) : myBookmarks.add(cardId);
+    try {
+        await setDoc(doc(db, 'bookmarks', currentUser.uid), { cards: [...myBookmarks] });
+        render();
+        showToast(had ? '已取消不熟標記' : '已標記為不熟 ⭐', had ? '' : 'success');
+    } catch(e) { console.error(e); showToast('標記失敗', 'error'); }
+}
 
-    onSnapshot(collection(db, "flashcards"), (snap) => {
+// ══ 公告 ══════════════════════════════════════════════════
+function loadAnnouncements() {
+    const q = query(collection(db, 'announcements'), orderBy('time','desc'), limit(30));
+    onSnapshot(q, (snap) => {
+        const el = document.getElementById('announce-scroll');
+        if (snap.empty) { el.innerHTML = '<div class="announce-empty-nav">目前暫無動態</div>'; return; }
+        el.innerHTML = snap.docs.map(d => {
+            const a = d.data();
+            const typeText = a.contentType === '筆記' ? '筆記' : '媒體';
+            return `
+                <div class="announce-item-nav" onclick="window.jumpToCard('${a.cardId}')">
+                    <span class="a-user">${a.user}</span> ${a.action}了${typeText}在
+                    <span class="a-card">${a.cardEn}</span>
+                    <span class="a-time">${formatTime(a.time)}</span>
+                </div>
+            `;
+        }).join('');
+    });
+}
+async function addAnnouncement(action, cardId, cardEn, contentType) {
+    try {
+        await addDoc(collection(db, 'announcements'), {
+            user: currentUser.displayName, action, cardId, cardEn, contentType,
+            time: new Date()
+        });
+    } catch(e) { console.error(e); }
+}
+
+// 跳轉卡片
+window.jumpToCard = (cardId) => {
+    currentFilter = '全部'; currentRegion = null;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-cat="全部"]').classList.add('active');
+    document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
+    render();
+    setTimeout(() => {
+        const el = document.getElementById(`card-${cardId}`);
+        if (el) {
+            el.scrollIntoView({ behavior:'smooth', block:'center' });
+            el.style.outline = '3px solid var(--teal)';
+            setTimeout(() => { el.style.outline = ''; }, 2000);
+        }
+        window.openNotes(cardId);
+    }, 100);
+};
+
+// ══ 資料載入 ══════════════════════════════════════════════
+function loadData() {
+    document.getElementById('card-grid').innerHTML = `<div class="loading-state"><div class="spinner"></div><p>載入中...</p></div>`;
+    onSnapshot(collection(db, 'flashcards'), (snap) => {
         allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         render();
         const modal = document.getElementById('commentModal');
@@ -463,100 +525,31 @@ function loadData() {
             const updated = allData.find(d => d.id === activeCardId);
             if (updated) renderComments(updated);
         }
-    }, (err) => {
-        console.error(err);
-        showToast('資料載入失敗，請重新整理頁面', 'error');
-    });
+    }, (err) => { console.error(err); showToast('資料載入失敗', 'error'); });
 }
 
-// ── 載入公告 ────────────────────────────────────────────
-function loadAnnouncements() {
-    document.getElementById('announce-section').style.display = 'block';
-    const q = query(collection(db, "announcements"), orderBy("time", "desc"), limit(20));
-    onSnapshot(q, (snap) => {
-        const list = document.getElementById('announce-list');
-        if (snap.empty) {
-            list.innerHTML = '<div class="announce-empty">目前暫無動態</div>';
-            return;
-        }
-        list.innerHTML = snap.docs.map(d => {
-            const a = d.data();
-            return `
-                <div class="announce-item">
-                    <div class="announce-text">
-                        <b>${a.user}</b> ${a.action}了一則${a.contentType}在 <b>${a.cardEn}</b>
-                    </div>
-                    <span class="announce-time">${formatTime(a.time)}</span>
-                    <button class="announce-link-btn" onclick="window.jumpToCard('${a.cardId}')">前往</button>
-                </div>
-            `;
-        }).join('');
-    }, (err) => { console.error(err); });
-}
-
-// ── 跳轉至單字卡 ────────────────────────────────────────
-window.jumpToCard = (cardId) => {
-    // 清除篩選
-    currentFilter = '全部';
-    currentRegion = null;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.filter-btn[data-cat="全部"]').classList.add('active');
-    document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
-    render();
-
-    // 等 render 完再 scroll
-    setTimeout(() => {
-        const el = document.getElementById(`card-${cardId}`);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.style.outline = '3px solid #1abc9c';
-            setTimeout(() => { el.style.outline = ''; }, 2000);
-        }
-        // 自動開啟留言
-        window.openNotes(cardId);
-    }, 100);
-};
-
-// ── 新增公告 ────────────────────────────────────────────
-async function addAnnouncement(action, cardId, cardEn, contentType) {
-    try {
-        await addDoc(collection(db, "announcements"), {
-            user: currentUser.displayName,
-            action,
-            cardId,
-            cardEn,
-            contentType,
-            time: new Date()
-        });
-    } catch (err) { console.error('公告新增失敗', err); }
-}
-
-// ── type → CSS 變數 ─────────────────────────────────────
+// ══ 渲染卡片 ══════════════════════════════════════════════
 function getTypeKey(type) {
-    const t = (type || '').toLowerCase();
-    if (t.includes('arteries') || t.includes('veins')) return 'vessel';
+    const t = (type||'').toLowerCase();
+    if (t.includes('arteries')||t.includes('veins')) return 'vessel';
     if (t.includes('muscle')) return 'muscle';
-    if (t.includes('nerve')) return 'nerve';
+    if (t.includes('nerve'))  return 'nerve';
     return 'other';
 }
 
-// ── 渲染卡片 ────────────────────────────────────────────
 function render() {
     const grid = document.getElementById('card-grid');
-    grid.innerHTML = "";
-
+    grid.innerHTML = '';
     let filtered = allData.filter(d => {
+        if (currentFilter === '不熟') return myBookmarks.has(d.id);
         if (currentRegion !== null && String(d.region) !== String(currentRegion)) return false;
         if (currentFilter === '全部') return true;
-        if (currentFilter === 'Vessel') {
-            return (d.type || '').toLowerCase().includes('arteries') || 
-                   (d.type || '').toLowerCase().includes('veins');
-        }
-        return (d.type || '').toLowerCase() === currentFilter.toLowerCase();
+        if (currentFilter === 'Vessel') return (d.type||'').toLowerCase().includes('arteries')||(d.type||'').toLowerCase().includes('veins');
+        return (d.type||'').toLowerCase() === currentFilter.toLowerCase();
     });
 
     if (filtered.length === 0) {
-        grid.innerHTML = `<div class="empty-state"><p style="font-size:2rem;">🔍</p><p>此分類目前沒有資料</p></div>`;
+        grid.innerHTML = `<div class="empty-state"><p style="font-size:2rem;">🔍</p><p>${currentFilter==='不熟'?'你還沒有標記不熟的單字':'此分類目前沒有資料'}</p></div>`;
         return;
     }
 
@@ -564,21 +557,24 @@ function render() {
         const wrap = document.createElement('div');
         wrap.className = 'card-container';
         wrap.id = `card-${data.id}`;
-        const typeKey = getTypeKey(data.type);
-        const noteCount = (data.comments || []).length;
+        const typeKey   = getTypeKey(data.type);
+        const isStarred = myBookmarks.has(data.id);
+        const noteCount = (data.comments||[]).length;
+        const likeCount = (data.comments||[]).reduce((s,c) => s + ((c.likes||[]).length), 0);
 
         wrap.innerHTML = `
             <div class="card" onclick="this.classList.toggle('flipped')">
                 <div class="card-front">
-                    <span class="badge" style="background:var(--${typeKey})">${data.type || 'Other'}</span>
-                    <h3>${data.en || ''}</h3>
+                    <button class="star-icon" onclick="event.stopPropagation(); window.toggleBM('${data.id}')">${isStarred ? '⭐' : '☆'}</button>
+                    <span class="badge" style="background:var(--${typeKey})">${data.type||'Other'}</span>
+                    <h3>${data.en||''}</h3>
+                    ${noteCount>0 ? `<div class="card-meta">💬 ${noteCount} 則討論</div>` : ''}
                 </div>
                 <div class="card-back">
-                    <h3>${data.ch || ''}</h3>
-                    ${noteCount > 0 ? `<div class="note-count">📝 ${noteCount} 則筆記</div>` : ''}
-                    <button 
-                        onclick="event.stopPropagation(); window.openNotes('${data.id}')" 
-                        style="cursor:pointer; padding:6px 14px; border:1px solid rgba(255,255,255,0.5); background:transparent; color:white; border-radius:5px;">
+                    <h3>${data.ch||''}</h3>
+                    ${isStarred ? '<div class="card-meta">⭐ 已標記不熟</div>' : ''}
+                    <button onclick="event.stopPropagation(); window.openNotes('${data.id}')"
+                        style="cursor:pointer;padding:5px 12px;border:1px solid rgba(255,255,255,0.5);background:transparent;color:white;border-radius:5px;margin-top:6px;font-size:0.82rem;">
                         📝 筆記留言
                     </button>
                 </div>
@@ -588,7 +584,9 @@ function render() {
     });
 }
 
-// ── 篩選按鈕 ────────────────────────────────────────────
+window.toggleBM = (id) => toggleBookmark(id);
+
+// ── 篩選 ──────────────────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -597,16 +595,14 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
         render();
     };
 });
-
-// ── 地區篩選 ────────────────────────────────────────────
 document.querySelectorAll('#region-list li').forEach(li => {
     li.onclick = () => {
-        const region = li.getAttribute('data-region');
-        if (currentRegion === region) {
+        const r = li.getAttribute('data-region');
+        if (currentRegion === r) {
             currentRegion = null;
             document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
         } else {
-            currentRegion = region;
+            currentRegion = r;
             document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
             li.classList.add('active-region');
         }
@@ -614,7 +610,7 @@ document.querySelectorAll('#region-list li').forEach(li => {
     };
 });
 
-// ── 開啟留言 Modal ──────────────────────────────────────
+// ══ 留言 Modal ════════════════════════════════════════════
 window.openNotes = (id) => {
     activeCardId = id;
     const data = allData.find(d => d.id === id);
@@ -624,16 +620,17 @@ window.openNotes = (id) => {
     document.getElementById('commentModal').style.display = 'block';
 };
 
-// ── 渲染留言 ────────────────────────────────────────────
 function renderComments(data) {
     const list = document.getElementById('comments-list');
     if (!data.comments || data.comments.length === 0) {
-        list.innerHTML = '<p style="color:#95a5a6; text-align:center; padding:10px;">尚無筆記</p>';
+        list.innerHTML = '<p style="color:#95a5a6;text-align:center;padding:10px;">尚無筆記</p>';
         return;
     }
     list.innerHTML = data.comments.map((c, idx) => {
-        const isOwner = currentUser && c.user === currentUser.displayName;
-        const timeStr = c.time ? formatTime({ toDate: () => new Date(c.time) }) : '';
+        const isOwner  = currentUser && c.user === currentUser.displayName;
+        const likes    = c.likes || [];
+        const iLiked   = currentUser && likes.includes(currentUser.displayName);
+        const timeStr  = c.time ? formatTime({ toDate: () => new Date(c.time) }) : '';
         return `
             <div class="comment-item">
                 <div class="comment-header">
@@ -643,71 +640,235 @@ function renderComments(data) {
                         ${isOwner ? `<button class="delete-btn" data-idx="${idx}">刪除</button>` : ''}
                     </span>
                 </div>
-                ${renderCommentContent(c.text)}
+                ${renderContent(c.text)}
+                <div class="comment-footer">
+                    <button class="like-btn ${iLiked?'liked':''}" data-idx="${idx}">
+                        👍 ${likes.length > 0 ? likes.length : ''}
+                    </button>
+                    ${likes.length > 0 ? `<span style="font-size:0.72rem;color:#95a5a6;">${likes.slice(0,3).join('、')}${likes.length>3?'等':''}覺得有幫助</span>` : ''}
+                </div>
             </div>
         `;
     }).join('');
 
-    // 綁定刪除
+    // 按讚
+    list.querySelectorAll('.like-btn').forEach(btn => {
+        btn.onclick = async () => {
+            if (!currentUser) { showToast('請先登入', 'error'); return; }
+            const idx = parseInt(btn.getAttribute('data-idx'));
+            const cardData = allData.find(d => d.id === activeCardId);
+            const comment  = cardData.comments[idx];
+            const likes    = comment.likes || [];
+            const iLiked   = likes.includes(currentUser.displayName);
+            const newComment = { ...comment, likes: iLiked ? likes.filter(l => l !== currentUser.displayName) : [...likes, currentUser.displayName] };
+            const newComments = [...cardData.comments];
+            newComments[idx] = newComment;
+            try {
+                await updateDoc(doc(db, 'flashcards', activeCardId), { comments: newComments });
+            } catch(e) { console.error(e); showToast('操作失敗', 'error'); }
+        };
+    });
+
+    // 刪除
     list.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async () => {
             const idx = parseInt(btn.getAttribute('data-idx'));
             const cardData = allData.find(d => d.id === activeCardId);
             const commentToRemove = cardData.comments[idx];
-            const contentType = detectLinkType(commentToRemove.text) === 'text' ? '筆記' : '媒體';
+            const contentType = detectLink(commentToRemove.text) === 'text' ? '筆記' : '媒體';
             try {
-                await updateDoc(doc(db, "flashcards", activeCardId), {
-                    comments: arrayRemove(commentToRemove)
-                });
+                await updateDoc(doc(db, 'flashcards', activeCardId), { comments: arrayRemove(commentToRemove) });
                 await addAnnouncement('刪除', activeCardId, cardData.en, contentType);
                 showToast('已刪除', 'success');
-            } catch (err) {
-                console.error(err);
-                showToast('刪除失敗，請再試一次', 'error');
-            }
+            } catch(e) { console.error(e); showToast('刪除失敗', 'error'); }
         };
     });
 }
 
-// ── 送出留言 ────────────────────────────────────────────
+// 送出留言
 document.getElementById('send-btn').onclick = async () => {
     const input = document.getElementById('comment-input');
-    const text = input.value.trim();
+    const text  = input.value.trim();
     if (!currentUser) { showToast('請先登入', 'error'); return; }
     if (!text) { showToast('請輸入內容', 'error'); return; }
-
-    const cardData = allData.find(d => d.id === activeCardId);
-    const contentType = detectLinkType(text) === 'text' ? '筆記' : '媒體';
-
+    const cardData    = allData.find(d => d.id === activeCardId);
+    const contentType = detectLink(text) === 'text' ? '筆記' : '媒體';
     try {
-        await updateDoc(doc(db, "flashcards", activeCardId), {
-            comments: arrayUnion({ 
-                user: currentUser.displayName, 
-                text,
-                time: new Date().toISOString()
-            })
+        await updateDoc(doc(db, 'flashcards', activeCardId), {
+            comments: arrayUnion({ user: currentUser.displayName, text, time: new Date().toISOString(), likes: [] })
         });
         await addAnnouncement('新增', activeCardId, cardData.en, contentType);
-        input.value = "";
+        input.value = '';
         showToast('已儲存', 'success');
-    } catch (err) {
-        console.error(err);
-        showToast('儲存失敗，請再試一次', 'error');
-    }
+    } catch(e) { console.error(e); showToast('儲存失敗', 'error'); }
+};
+document.getElementById('comment-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('send-btn').click(); });
+document.getElementById('close-modal-btn').onclick = () => { document.getElementById('commentModal').style.display = 'none'; };
+document.getElementById('commentModal').addEventListener('click', e => { if (e.target.id === 'commentModal') document.getElementById('commentModal').style.display = 'none'; });
+
+// ══ 測驗模式 ══════════════════════════════════════════════
+const QUIZ_TOTAL = 30;
+
+async function loadQuizState() {
+    try {
+        const snap = await getDoc(doc(db, 'quizStates', currentUser.uid));
+        if (snap.exists()) {
+            quizState = snap.data();
+        } else {
+            quizState = null;
+        }
+    } catch(e) { quizState = null; }
+}
+
+async function saveQuizState() {
+    if (!currentUser || !quizState) return;
+    try {
+        await setDoc(doc(db, 'quizStates', currentUser.uid), quizState);
+    } catch(e) { console.error(e); }
+}
+
+async function clearQuizState() {
+    if (!currentUser) return;
+    try {
+        await deleteDoc(doc(db, 'quizStates', currentUser.uid));
+        quizState = null;
+    } catch(e) { console.error(e); }
+}
+
+document.getElementById('quiz-start-btn').onclick = () => {
+    if (!currentUser) { showToast('請先登入', 'error'); return; }
+    if (allData.length === 0) { showToast('單字卡載入中，請稍後', 'error'); return; }
+    openQuizModal();
 };
 
-document.getElementById('comment-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('send-btn').click();
-});
+function openQuizModal() {
+    const modal = document.getElementById('quizModal');
+    modal.style.display = 'block';
 
-// ── 關閉 Modal ──────────────────────────────────────────
-document.getElementById('close-modal-btn').onclick = () => {
-    document.getElementById('commentModal').style.display = 'none';
-};
-document.getElementById('commentModal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('commentModal')) {
-        document.getElementById('commentModal').style.display = 'none';
+    // 有未完成的測驗
+    if (quizState && quizState.questions && quizState.current < quizState.questions.length) {
+        showQuizQuestion();
+    } else {
+        startNewQuiz();
     }
+}
+
+function startNewQuiz() {
+    // 隨機抽題
+    const pool = [...allData];
+    const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, Math.min(QUIZ_TOTAL, pool.length));
+    quizState = {
+        questions: shuffled.map(d => ({ id: d.id, en: d.en, ch: d.ch })),
+        current: 0,
+        correct: 0,
+        wrong: 0,
+        marked: []
+    };
+    saveQuizState();
+    showQuizQuestion();
+}
+
+function showQuizQuestion() {
+    const body = document.getElementById('quiz-body');
+    const q    = quizState.questions[quizState.current];
+    const total = quizState.questions.length;
+    const prog  = quizState.current;
+    const isMarked = quizState.marked.includes(q.id);
+
+    body.innerHTML = `
+        <div class="quiz-progress">
+            <span>第 ${prog + 1} / ${total} 題</span>
+            <span>✅ ${quizState.correct} &nbsp; ❌ ${quizState.wrong}</span>
+        </div>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" style="width:${(prog/total)*100}%"></div>
+        </div>
+        <div class="quiz-question">
+            <span class="quiz-type-label">看中文猜英文</span>
+            ${q.ch}
+        </div>
+        <div id="quiz-answer-reveal" class="quiz-answer-reveal">
+            答案：<b>${q.en}</b>
+        </div>
+        <button id="quiz-show-answer" style="width:100%;padding:11px;background:#f0f2f5;border:none;border-radius:8px;cursor:pointer;margin-bottom:12px;font-size:0.9rem;">
+            顯示答案
+        </button>
+        <div class="quiz-btns" id="quiz-result-btns" style="display:none;">
+            <button class="quiz-btn-correct" id="quiz-correct">✅ 答對了</button>
+            <button class="quiz-btn-wrong" id="quiz-wrong">❌ 答錯了</button>
+        </div>
+        <button class="quiz-btn-mark ${isMarked?'marked':''}" id="quiz-mark">
+            ${isMarked ? '⭐ 已標記不熟' : '☆ 標記不熟'}
+        </button>
+        <button class="quiz-exit-btn" id="quiz-exit">中途離開（進度已儲存）</button>
+    `;
+
+    document.getElementById('quiz-show-answer').onclick = () => {
+        document.getElementById('quiz-answer-reveal').style.display = 'block';
+        document.getElementById('quiz-show-answer').style.display = 'none';
+        document.getElementById('quiz-result-btns').style.display = 'flex';
+    };
+
+    document.getElementById('quiz-correct').onclick = () => nextQuiz(true);
+    document.getElementById('quiz-wrong').onclick   = () => nextQuiz(false);
+
+    document.getElementById('quiz-mark').onclick = async () => {
+        const btn = document.getElementById('quiz-mark');
+        await toggleBookmark(q.id);
+        const nowMarked = myBookmarks.has(q.id);
+        if (nowMarked && !quizState.marked.includes(q.id)) quizState.marked.push(q.id);
+        else quizState.marked = quizState.marked.filter(id => id !== q.id);
+        btn.textContent = nowMarked ? '⭐ 已標記不熟' : '☆ 標記不熟';
+        btn.className = `quiz-btn-mark ${nowMarked ? 'marked' : ''}`;
+        saveQuizState();
+    };
+
+    document.getElementById('quiz-exit').onclick = async () => {
+        await saveQuizState();
+        document.getElementById('quizModal').style.display = 'none';
+    };
+}
+
+async function nextQuiz(isCorrect) {
+    if (isCorrect) quizState.correct++;
+    else quizState.wrong++;
+    quizState.current++;
+
+    if (quizState.current >= quizState.questions.length) {
+        await clearQuizState();
+        showQuizResult();
+    } else {
+        await saveQuizState();
+        showQuizQuestion();
+    }
+}
+
+function showQuizResult() {
+    const body  = document.getElementById('quiz-body');
+    const total = quizState ? quizState.questions.length : QUIZ_TOTAL;
+    const correct = quizState ? quizState.correct : 0;
+    const pct   = Math.round((correct / total) * 100);
+
+    body.innerHTML = `
+        <div class="quiz-result">
+            <p style="font-size:1.1rem;margin:0;">🎉 測驗完成！</p>
+            <div class="quiz-score">${correct} / ${total}</div>
+            <div class="quiz-score-sub">正確率 ${pct}%</div>
+            <div style="margin-top:15px;font-size:0.88rem;color:#666;">
+                ${pct >= 80 ? '太棒了！繼續保持 💪' : pct >= 60 ? '不錯！再加油一下 📚' : '還需要多複習喔 😊'}
+            </div>
+            <div class="quiz-result-btns">
+                <button onclick="window.startNewQuizBtn()" style="background:var(--teal);color:white;">再來一次</button>
+                <button onclick="document.getElementById('quizModal').style.display='none'" style="background:#eee;color:#333;">關閉</button>
+            </div>
+        </div>
+    `;
+}
+
+window.startNewQuizBtn = () => startNewQuiz();
+
+document.getElementById('quizModal').addEventListener('click', e => {
+    if (e.target.id === 'quizModal') document.getElementById('quizModal').style.display = 'none';
 });
 </script>
 </body>
