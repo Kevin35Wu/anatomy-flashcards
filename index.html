@@ -3,90 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomy Pro - 完整最終版</title>
+    <title>Anatomy Pro</title>
     <style>
         :root { 
-            --muscle: #e67e22; 
-            --nerve: #f1c40f; 
-            --vessel: #e74c3c; 
-            --other: #95a5a6; 
-            --main: #2c3e50; 
+            --muscle: #e67e22; --nerve: #f1c40f; 
+            --vessel: #e74c3c; --other: #95a5a6; --main: #2c3e50; 
         }
+        * { box-sizing: border-box; }
         body { font-family: "Microsoft JhengHei", sans-serif; margin: 0; background: #f4f7f6; display: flex; }
 
-        /* 側邊欄 */
+        /* ── 側邊欄 ── */
         nav { 
             width: 250px; background: var(--main); color: white; 
             height: 100vh; padding: 20px; position: fixed; left: 0; top: 0;
-            display: flex; flex-direction: column; box-sizing: border-box;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
-        nav h2 { border-bottom: 1px solid #555; padding-bottom: 10px; margin-top: 0; }
-        nav ul { list-style: none; padding: 0; flex-grow: 1; overflow-y: auto; }
-        nav li { 
-            padding: 12px; cursor: pointer; border-radius: 4px; 
-            transition: 0.3s; font-size: 0.9rem; 
-        }
+        nav h2 { border-bottom: 1px solid #555; padding-bottom: 10px; margin-top: 0; font-size: 1rem; }
+        nav ul { list-style: none; padding: 0; margin: 0; }
+        nav li { padding: 10px 12px; cursor: pointer; border-radius: 4px; transition: 0.3s; font-size: 0.85rem; }
         nav li:hover { background: #34495e; }
         nav li.active-region { background: #1abc9c; }
+
+        .drive-btn {
+            display: block; margin: 10px 0; padding: 10px;
+            background: #27ae60; color: white; text-decoration: none;
+            border-radius: 6px; text-align: center; font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        .drive-btn:hover { background: #219a52; }
+
         .user-box { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: auto; text-align: center; }
 
-        /* 右側主畫面 */
+        /* ── 主畫面 ── */
         main { margin-left: 250px; flex-grow: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* 頂部篩選 */
+        /* ── 頂部篩選 ── */
         .top-filter {
             position: sticky; top: 0; z-index: 100;
-            background: white; padding: 15px 30px;
-            display: flex; gap: 15px; flex-wrap: wrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: white; padding: 12px 25px;
+            display: flex; gap: 10px; flex-wrap: wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-items: center;
         }
         .filter-btn {
-            padding: 8px 20px; border: 1px solid #ddd; border-radius: 20px;
-            cursor: pointer; background: white; font-weight: bold; transition: 0.3s;
+            padding: 7px 18px; border: 1px solid #ddd; border-radius: 20px;
+            cursor: pointer; background: white; font-weight: bold; transition: 0.3s; font-size: 0.85rem;
         }
         .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
 
-        /* 四欄佈局 */
-        .container { padding: 30px; }
+        /* ── 公告專區 ── */
+        .announce-section {
+            margin: 20px 25px 0; background: white; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden;
+        }
+        .announce-header {
+            background: var(--main); color: white; padding: 12px 18px;
+            font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+        }
+        .announce-list { max-height: 200px; overflow-y: auto; }
+        .announce-item {
+            padding: 10px 18px; border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem; display: flex; justify-content: space-between;
+            align-items: center; gap: 10px; transition: background 0.2s;
+        }
+        .announce-item:hover { background: #f8f9fa; }
+        .announce-item:last-child { border-bottom: none; }
+        .announce-item .announce-text { flex: 1; }
+        .announce-item .announce-text b { color: #1abc9c; }
+        .announce-item .announce-time { color: #95a5a6; font-size: 0.75rem; flex-shrink: 0; }
+        .announce-link-btn {
+            padding: 3px 10px; font-size: 0.75rem; background: var(--main);
+            color: white; border: none; border-radius: 4px; cursor: pointer; flex-shrink: 0;
+        }
+        .announce-empty { padding: 20px; text-align: center; color: #95a5a6; font-size: 0.85rem; }
+
+        /* ── 卡片區 ── */
+        .container { padding: 20px 25px 30px; }
         .card-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
         }
         @media (max-width: 1400px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 1000px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
 
-        /* 卡片設計 */
-        .card-container { perspective: 1000px; min-height: 180px; }
+        .card-container { perspective: 1000px; min-height: 175px; }
         .card { 
-            width: 100%; height: 100%; min-height: 180px;
+            width: 100%; height: 100%; min-height: 175px;
             transition: transform 0.6s; transform-style: preserve-3d; 
             cursor: pointer; position: relative; 
         }
         .card.flipped { transform: rotateY(180deg); }
         .card-front, .card-back {
-            position: absolute; width: 100%; min-height: 180px;
+            position: absolute; width: 100%; min-height: 175px;
             backface-visibility: hidden; border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 15px; box-sizing: border-box; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
+            padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
         }
         .card-front { background: white; border-bottom: 5px solid var(--main); }
         .card-back { background: var(--main); color: white; transform: rotateY(180deg); }
         .card-front h3, .card-back h3 { 
-            margin: 10px 0; padding: 0 10px;
-            word-break: break-word; overflow-wrap: break-word;
-            font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+            margin: 8px 0; padding: 0 8px;
+            word-break: break-word; font-size: clamp(0.8rem, 1.4vw, 1rem);
         }
         .badge { 
-            position: absolute; top: 10px; right: 10px; font-size: 0.7rem; 
-            color: white; padding: 2px 8px; border-radius: 5px; 
+            position: absolute; top: 10px; right: 10px; font-size: 0.65rem; 
+            color: white; padding: 2px 7px; border-radius: 5px; 
+        }
+        .card-back .note-count {
+            font-size: 0.75rem; opacity: 0.7; margin-bottom: 5px;
         }
 
-        /* Loading */
-        .loading-state {
-            grid-column: 1/-1; text-align: center; padding: 100px; color: #95a5a6;
+        /* ── Loading / Empty ── */
+        .loading-state, .empty-state {
+            grid-column: 1/-1; text-align: center; padding: 80px; color: #95a5a6;
         }
         .spinner {
             width: 40px; height: 40px; border: 4px solid #ddd;
@@ -95,46 +123,93 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 空白狀態 */
-        .empty-state {
-            grid-column: 1/-1; text-align: center; padding: 80px; color: #95a5a6;
-        }
-
-        /* 彈窗 */
+        /* ── Modal ── */
         .modal { 
             display: none; position: fixed; z-index: 1000; 
             left: 0; top: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.7); 
         }
         .modal-content { 
-            background: white; margin: 5% auto; padding: 25px; 
-            width: 90%; max-width: 450px; border-radius: 15px; 
-            position: relative;
+            background: white; margin: 3% auto; padding: 25px; 
+            width: 90%; max-width: 520px; border-radius: 15px; 
         }
+        .modal-content h2 { margin-top: 0; font-size: 1.1rem; }
+
+        /* 留言項目 */
         .comment-item { 
-            background: #f0f2f5; padding: 10px; border-radius: 8px; 
-            margin-bottom: 10px; font-size: 0.9rem; text-align: left;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            gap: 10px;
+            background: #f0f2f5; padding: 10px 12px; border-radius: 8px; 
+            margin-bottom: 10px; font-size: 0.88rem; text-align: left;
         }
-        .comment-item .comment-text { flex: 1; }
+        .comment-item .comment-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 5px;
+        }
+        .comment-item .comment-user { font-weight: bold; color: var(--main); }
+        .comment-item .comment-time { font-size: 0.75rem; color: #95a5a6; }
         .comment-item .delete-btn {
             background: none; border: none; cursor: pointer;
-            color: #e74c3c; font-size: 0.8rem; padding: 0; flex-shrink: 0;
+            color: #e74c3c; font-size: 0.78rem; padding: 0; margin-left: 8px;
         }
         .comment-item .delete-btn:hover { text-decoration: underline; }
+        .comment-item .comment-body { word-break: break-word; }
 
-        /* Toast 通知 */
+        /* 媒體顯示 */
+        .comment-item img { 
+            max-width: 100%; border-radius: 6px; margin-top: 6px; 
+            cursor: pointer; display: block;
+        }
+        .comment-item iframe { 
+            width: 100%; height: 200px; border: none; 
+            border-radius: 6px; margin-top: 6px; display: block;
+        }
+        .comment-item .drive-preview {
+            display: flex; align-items: center; gap: 8px;
+            background: #e8f5e9; padding: 8px 10px; border-radius: 6px;
+            margin-top: 6px; text-decoration: none; color: #27ae60; font-size: 0.82rem;
+        }
+
+        /* 輸入區 */
+        .input-area { margin-top: 12px; }
+        .input-area .hint {
+            font-size: 0.75rem; color: #95a5a6; margin-bottom: 6px;
+        }
+        .input-row { display: flex; gap: 8px; }
+        .input-row input {
+            flex: 1; padding: 10px; border: 1px solid #ddd; 
+            border-radius: 5px; outline: none; font-size: 0.9rem;
+        }
+        .input-row button {
+            padding: 10px 18px; background: var(--main); color: white; 
+            border: none; border-radius: 5px; cursor: pointer; white-space: nowrap;
+        }
+        .close-btn {
+            width: 100%; margin-top: 12px; padding: 10px; 
+            border: none; background: #eee; cursor: pointer; border-radius: 5px;
+        }
+
+        /* ── Toast ── */
         .toast {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             background: #2c3e50; color: white; padding: 12px 20px;
             border-radius: 8px; font-size: 0.9rem;
-            transform: translateY(100px); opacity: 0;
-            transition: all 0.3s ease;
+            transform: translateY(100px); opacity: 0; transition: all 0.3s ease;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.error { background: #e74c3c; }
         .toast.success { background: #27ae60; }
+
+        /* 圖片燈箱 */
+        .lightbox {
+            display: none; position: fixed; z-index: 9998;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); align-items: center; justify-content: center;
+        }
+        .lightbox.show { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; }
+        .lightbox-close { 
+            position: absolute; top: 20px; right: 30px; color: white; 
+            font-size: 2rem; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -148,6 +223,15 @@
         <li data-region="4">4. 前臂區</li>
         <li data-region="5">5. 手部</li>
     </ul>
+
+    <div style="margin-top: 15px;">
+        <p style="font-size:0.8rem; color:#95a5a6; margin:0 0 5px;">📁 共用素材資料夾</p>
+        <a class="drive-btn" href="https://drive.google.com/drive/folders/15K0Z4mQYISFuY5FuCQBcBwY1mVBTjcrX?usp=sharing" target="_blank">
+            📂 開啟 Google Drive
+        </a>
+        <p style="font-size:0.72rem; color:#95a5a6; margin:4px 0 0;">上傳圖片／影片後，複製連結貼入留言即可顯示</p>
+    </div>
+
     <div class="user-box" id="user-info">
         <p>檢查狀態中...</p>
     </div>
@@ -162,6 +246,14 @@
         <button class="filter-btn" data-cat="Other">其他</button>
     </div>
 
+    <!-- 公告專區 -->
+    <div class="announce-section" id="announce-section" style="display:none;">
+        <div class="announce-header">📢 最新動態</div>
+        <div class="announce-list" id="announce-list">
+            <div class="announce-empty">暫無動態</div>
+        </div>
+    </div>
+
     <div class="container">
         <div id="card-grid" class="card-grid">
             <div class="loading-state">
@@ -172,299 +264,451 @@
     </div>
 </main>
 
-<!-- 留言彈窗 -->
+<!-- 留言 Modal -->
 <div id="commentModal" class="modal">
     <div class="modal-content">
         <h2 id="modal-title"></h2>
-        <div id="comments-list" style="max-height: 300px; overflow-y: auto; margin: 15px 0;"></div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="comment-input" placeholder="新增筆記..." 
-                style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px; outline:none;">
-            <button id="send-btn" 
-                style="padding:10px 20px; background:var(--main); color:white; border:none; border-radius:5px; cursor:pointer;">
-                送出
-            </button>
+        <div id="comments-list" style="max-height: 320px; overflow-y: auto; margin: 12px 0;"></div>
+        <div class="input-area">
+            <div class="hint">💡 可貼入文字、Google Drive 圖片／影片連結、YouTube 連結</div>
+            <div class="input-row">
+                <input type="text" id="comment-input" placeholder="新增筆記或貼入連結...">
+                <button id="send-btn">送出</button>
+            </div>
         </div>
-        <button id="close-modal-btn"
-            style="width:100%; margin-top:15px; padding:10px; border:none; background:#eee; cursor:pointer; border-radius:5px;">
-            關閉
-        </button>
+        <button class="close-btn" id="close-modal-btn">關閉</button>
     </div>
 </div>
 
-<!-- Toast 通知 -->
+<!-- 圖片燈箱 -->
+<div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightbox-close">✕</span>
+    <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { 
-        getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+    getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove,
+    addDoc, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+    getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyB43JZQ7qXrcU_WkVHGEPeZdmicXcmjbq0",
-        authDomain: "anatomy-dc089.firebaseapp.com",
-        projectId: "anatomy-dc089",
-        storageBucket: "anatomy-dc089.firebasestorage.app",
-        messagingSenderId: "742909907454",
-        appId: "1:742909907454:web:5afaaf70fc1b41247270af"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyB43JZQ7qXrcU_WkVHGEPeZdmicXcmjbq0",
+    authDomain: "anatomy-dc089.firebaseapp.com",
+    projectId: "anatomy-dc089",
+    storageBucket: "anatomy-dc089.firebasestorage.app",
+    messagingSenderId: "742909907454",
+    appId: "1:742909907454:web:5afaaf70fc1b41247270af"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-    let allData = [];
-    let currentFilter = '全部';
-    let currentRegion = null;  // null = 全部地區
-    let currentUser = null;
-    let activeCardId = null;
+let allData = [];
+let currentFilter = '全部';
+let currentRegion = null;
+let currentUser = null;
+let activeCardId = null;
 
-    // ── Toast 通知 ──────────────────────────────
-    function showToast(msg, type = '') {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.className = `toast ${type} show`;
-        setTimeout(() => { toast.className = 'toast'; }, 3000);
+// ── Toast ──────────────────────────────────────────────
+function showToast(msg, type = '') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+// ── 時間格式化 ─────────────────────────────────────────
+function formatTime(ts) {
+    if (!ts) return '';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getMonth()+1}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// ── 連結類型偵測 ────────────────────────────────────────
+function detectLinkType(text) {
+    if (!text) return 'text';
+    const t = text.trim();
+    // YouTube
+    if (/youtube\.com\/watch|youtu\.be\//.test(t)) return 'youtube';
+    // Google Drive 影片（常見副檔名）
+    if (/drive\.google\.com/.test(t) && /\.(mp4|mov|avi|mkv)/i.test(t)) return 'drive-video';
+    // Google Drive 圖片
+    if (/drive\.google\.com/.test(t) && /\.(jpg|jpeg|png|gif|webp)/i.test(t)) return 'drive-image';
+    // Google Drive 一般連結
+    if (/drive\.google\.com/.test(t)) return 'drive-link';
+    // 直接圖片網址
+    if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(t)) return 'image';
+    // 普通網址
+    if (/^https?:\/\//.test(t)) return 'link';
+    return 'text';
+}
+
+// ── 取得 YouTube embed URL ──────────────────────────────
+function getYouTubeEmbedUrl(url) {
+    let id = '';
+    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    if (match) id = match[1];
+    return id ? `https://www.youtube.com/embed/${id}` : null;
+}
+
+// ── 取得 Google Drive 嵌入 URL ─────────────────────────
+function getDriveEmbedUrl(url) {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) return `https://drive.google.com/file/d/${match[1]}/preview`;
+    const match2 = url.match(/id=([a-zA-Z0-9_-]+)/);
+    if (match2) return `https://drive.google.com/file/d/${match2[1]}/preview`;
+    return null;
+}
+
+// ── 渲染留言內容（含媒體偵測）──────────────────────────
+function renderCommentContent(text) {
+    const type = detectLinkType(text);
+    if (type === 'youtube') {
+        const embedUrl = getYouTubeEmbedUrl(text);
+        return embedUrl 
+            ? `<div class="comment-body"><a href="${text}" target="_blank">${text}</a><br><iframe src="${embedUrl}" allowfullscreen></iframe></div>`
+            : `<div class="comment-body"><a href="${text}" target="_blank">${text}</a></div>`;
     }
-
-    // ── 登入狀態監聽 ────────────────────────────
-    onAuthStateChanged(auth, (user) => {
-        const userInfoBox = document.getElementById('user-info');
-        if (user) {
-            currentUser = user;
-            userInfoBox.innerHTML = `
-                <img src="${user.photoURL}" style="width:35px; border-radius:50%; border:2px solid white;"><br>
-                <small>${user.displayName}</small><br>
-                <button id="logout-btn" style="margin-top:5px; cursor:pointer; padding:2px 8px; border-radius:4px;">登出</button>
-            `;
-            document.getElementById('logout-btn').onclick = () => signOut(auth);
-            loadData();
-        } else {
-            currentUser = null;
-            userInfoBox.innerHTML = `
-                <button id="login-btn" style="width:100%; padding:10px; cursor:pointer; border-radius:5px;">
-                    🔑 Google 登入
-                </button>
-            `;
-            document.getElementById('login-btn').onclick = () => {
-                signInWithPopup(auth, provider).catch(() => {
-                    showToast('登入失敗，請確認 Firebase Authentication 已啟用 Google 提供者！', 'error');
-                });
-            };
-            document.getElementById('card-grid').innerHTML = `
-                <div class="loading-state">
-                    <h2>🔒 已鎖定內容</h2>
-                    <p>請點擊左側按鈕登入</p>
-                </div>`;
+    if (type === 'drive-video' || type === 'drive-link') {
+        const embedUrl = getDriveEmbedUrl(text);
+        if (embedUrl) {
+            return `<div class="comment-body"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
         }
-    });
+        return `<div class="comment-body"><a class="drive-preview" href="${text}" target="_blank">📁 開啟 Google Drive 檔案</a></div>`;
+    }
+    if (type === 'drive-image') {
+        const embedUrl = getDriveEmbedUrl(text);
+        if (embedUrl) {
+            return `<div class="comment-body"><img src="${embedUrl}" onclick="window.openLightbox('${embedUrl}')"></div>`;
+        }
+    }
+    if (type === 'image') {
+        return `<div class="comment-body"><img src="${text}" onclick="window.openLightbox('${text}')"></div>`;
+    }
+    if (type === 'link') {
+        return `<div class="comment-body"><a href="${text}" target="_blank">${text}</a></div>`;
+    }
+    return `<div class="comment-body">${text}</div>`;
+}
 
-    // ── 載入資料（含 Modal 同步） ─────────────────
-    function loadData() {
+// ── 燈箱 ───────────────────────────────────────────────
+window.openLightbox = (src) => {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('show');
+};
+document.getElementById('lightbox-close').onclick = () => {
+    document.getElementById('lightbox').classList.remove('show');
+};
+document.getElementById('lightbox').onclick = (e) => {
+    if (e.target === document.getElementById('lightbox')) {
+        document.getElementById('lightbox').classList.remove('show');
+    }
+};
+
+// ── 登入狀態 ────────────────────────────────────────────
+onAuthStateChanged(auth, (user) => {
+    const userInfoBox = document.getElementById('user-info');
+    if (user) {
+        currentUser = user;
+        userInfoBox.innerHTML = `
+            <img src="${user.photoURL}" style="width:35px; border-radius:50%; border:2px solid white;"><br>
+            <small>${user.displayName}</small><br>
+            <button id="logout-btn" style="margin-top:5px; cursor:pointer; padding:2px 8px; border-radius:4px;">登出</button>
+        `;
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+        loadData();
+        loadAnnouncements();
+    } else {
+        currentUser = null;
+        userInfoBox.innerHTML = `
+            <button id="login-btn" style="width:100%; padding:10px; cursor:pointer; border-radius:5px;">
+                🔑 Google 登入
+            </button>
+        `;
+        document.getElementById('login-btn').onclick = () => {
+            signInWithPopup(auth, provider).catch(() => {
+                showToast('登入失敗，請確認 Firebase Authentication 已啟用 Google 提供者！', 'error');
+            });
+        };
         document.getElementById('card-grid').innerHTML = `
             <div class="loading-state">
-                <div class="spinner"></div>
-                <p>載入中...</p>
+                <h2>🔒 已鎖定內容</h2>
+                <p>請點擊左側按鈕登入</p>
             </div>`;
-
-        onSnapshot(collection(db, "flashcards"), (snap) => {
-            allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            render();
-            // 若 Modal 是開啟的，同步刷新留言
-            const modal = document.getElementById('commentModal');
-            if (modal.style.display === 'block' && activeCardId) {
-                const updated = allData.find(d => d.id === activeCardId);
-                if (updated) renderComments(updated);
-            }
-        }, (err) => {
-            console.error(err);
-            showToast('資料載入失敗，請重新整理頁面', 'error');
-        });
+        document.getElementById('announce-section').style.display = 'none';
     }
+});
 
-    // ── 修正：type → CSS 變數對應 ───────────────
-    function getTypeKey(type) {
-        const t = (type || '').toLowerCase();
-        if (t.includes('arteries') || t.includes('veins')) return 'vessel';
-        if (t.includes('muscle')) return 'muscle';
-        if (t.includes('nerve')) return 'nerve';
-        return 'other';
-    }
+// ── 載入單字卡資料 ──────────────────────────────────────
+function loadData() {
+    document.getElementById('card-grid').innerHTML = `
+        <div class="loading-state"><div class="spinner"></div><p>載入中...</p></div>`;
 
-    // ── 渲染卡片 ────────────────────────────────
-    function render() {
-        const grid = document.getElementById('card-grid');
-        grid.innerHTML = "";
+    onSnapshot(collection(db, "flashcards"), (snap) => {
+        allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        render();
+        const modal = document.getElementById('commentModal');
+        if (modal.style.display === 'block' && activeCardId) {
+            const updated = allData.find(d => d.id === activeCardId);
+            if (updated) renderComments(updated);
+        }
+    }, (err) => {
+        console.error(err);
+        showToast('資料載入失敗，請重新整理頁面', 'error');
+    });
+}
 
-        let filtered = allData.filter(d => {
-            // 地區篩選
-            if (currentRegion !== null && String(d.region) !== String(currentRegion)) return false;
-            // 分類篩選
-            if (currentFilter === '全部') return true;
-            if (currentFilter === 'Vessel') {
-                return (d.type || '').toLowerCase().includes('arteries') || 
-                       (d.type || '').toLowerCase().includes('veins');
-            }
-            return (d.type || '').toLowerCase() === currentFilter.toLowerCase();
-        });
-
-        // 空白狀態
-        if (filtered.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <p style="font-size:2rem;">🔍</p>
-                    <p>此分類目前沒有資料</p>
-                </div>`;
+// ── 載入公告 ────────────────────────────────────────────
+function loadAnnouncements() {
+    document.getElementById('announce-section').style.display = 'block';
+    const q = query(collection(db, "announcements"), orderBy("time", "desc"), limit(20));
+    onSnapshot(q, (snap) => {
+        const list = document.getElementById('announce-list');
+        if (snap.empty) {
+            list.innerHTML = '<div class="announce-empty">目前暫無動態</div>';
             return;
         }
-
-        filtered.forEach(data => {
-            const wrap = document.createElement('div');
-            wrap.className = 'card-container';
-            const typeKey = getTypeKey(data.type);
-
-            wrap.innerHTML = `
-                <div class="card" onclick="this.classList.toggle('flipped')">
-                    <div class="card-front">
-                        <span class="badge" style="background:var(--${typeKey})">${data.type || 'Other'}</span>
-                        <h3>${data.en || ''}</h3>
-                    </div>
-                    <div class="card-back">
-                        <h3>${data.ch || ''}</h3>
-                        <button 
-                            onclick="event.stopPropagation(); window.openNotes('${data.id}')" 
-                            style="cursor:pointer; padding:6px 14px; border:1px solid rgba(255,255,255,0.5); background:transparent; color:white; border-radius:5px;">
-                            📝 筆記留言
-                        </button>
-                    </div>
-                </div>
-            `;
-            grid.appendChild(wrap);
-        });
-    }
-
-    // ── 分類篩選 ─────────────────────────────────
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.getAttribute('data-cat');
-            render();
-        };
-    });
-
-    // ── 地區篩選（側邊欄） ────────────────────────
-    document.querySelectorAll('#region-list li').forEach(li => {
-        li.onclick = () => {
-            const region = li.getAttribute('data-region');
-            if (currentRegion === region) {
-                // 再次點擊取消篩選
-                currentRegion = null;
-                document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
-            } else {
-                currentRegion = region;
-                document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
-                li.classList.add('active-region');
-            }
-            render();
-        };
-    });
-
-    // ── 留言視窗 ─────────────────────────────────
-    window.openNotes = (id) => {
-        activeCardId = id;
-        const data = allData.find(d => d.id === id);
-        if (!data) return;
-        document.getElementById('modal-title').innerText = `${data.en} (${data.ch})`;
-        renderComments(data);
-        document.getElementById('commentModal').style.display = 'block';
-    };
-
-    function renderComments(data) {
-        const list = document.getElementById('comments-list');
-        if (!data.comments || data.comments.length === 0) {
-            list.innerHTML = '<p style="color:#95a5a6; text-align:center;">尚無筆記</p>';
-            return;
-        }
-        list.innerHTML = data.comments.map((c, idx) => {
-            const isOwner = currentUser && c.user === currentUser.displayName;
+        list.innerHTML = snap.docs.map(d => {
+            const a = d.data();
             return `
-                <div class="comment-item">
-                    <div class="comment-text"><b>${c.user}</b>：${c.text}</div>
-                    ${isOwner ? `<button class="delete-btn" data-idx="${idx}">刪除</button>` : ''}
+                <div class="announce-item">
+                    <div class="announce-text">
+                        <b>${a.user}</b> ${a.action}了一則${a.contentType}在 <b>${a.cardEn}</b>
+                    </div>
+                    <span class="announce-time">${formatTime(a.time)}</span>
+                    <button class="announce-link-btn" onclick="window.jumpToCard('${a.cardId}')">前往</button>
                 </div>
             `;
         }).join('');
+    }, (err) => { console.error(err); });
+}
 
-        // 綁定刪除按鈕
-        list.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.onclick = async () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                const data = allData.find(d => d.id === activeCardId);
-                const commentToRemove = data.comments[idx];
-                try {
-                    await updateDoc(doc(db, "flashcards", activeCardId), {
-                        comments: arrayRemove(commentToRemove)
-                    });
-                    showToast('筆記已刪除', 'success');
-                    // 等 onSnapshot 更新後 re-render
-                } catch (err) {
-                    console.error(err);
-                    showToast('刪除失敗，請再試一次', 'error');
-                }
-            };
+// ── 跳轉至單字卡 ────────────────────────────────────────
+window.jumpToCard = (cardId) => {
+    // 清除篩選
+    currentFilter = '全部';
+    currentRegion = null;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-cat="全部"]').classList.add('active');
+    document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
+    render();
+
+    // 等 render 完再 scroll
+    setTimeout(() => {
+        const el = document.getElementById(`card-${cardId}`);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.outline = '3px solid #1abc9c';
+            setTimeout(() => { el.style.outline = ''; }, 2000);
+        }
+        // 自動開啟留言
+        window.openNotes(cardId);
+    }, 100);
+};
+
+// ── 新增公告 ────────────────────────────────────────────
+async function addAnnouncement(action, cardId, cardEn, contentType) {
+    try {
+        await addDoc(collection(db, "announcements"), {
+            user: currentUser.displayName,
+            action,
+            cardId,
+            cardEn,
+            contentType,
+            time: new Date()
         });
+    } catch (err) { console.error('公告新增失敗', err); }
+}
+
+// ── type → CSS 變數 ─────────────────────────────────────
+function getTypeKey(type) {
+    const t = (type || '').toLowerCase();
+    if (t.includes('arteries') || t.includes('veins')) return 'vessel';
+    if (t.includes('muscle')) return 'muscle';
+    if (t.includes('nerve')) return 'nerve';
+    return 'other';
+}
+
+// ── 渲染卡片 ────────────────────────────────────────────
+function render() {
+    const grid = document.getElementById('card-grid');
+    grid.innerHTML = "";
+
+    let filtered = allData.filter(d => {
+        if (currentRegion !== null && String(d.region) !== String(currentRegion)) return false;
+        if (currentFilter === '全部') return true;
+        if (currentFilter === 'Vessel') {
+            return (d.type || '').toLowerCase().includes('arteries') || 
+                   (d.type || '').toLowerCase().includes('veins');
+        }
+        return (d.type || '').toLowerCase() === currentFilter.toLowerCase();
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><p style="font-size:2rem;">🔍</p><p>此分類目前沒有資料</p></div>`;
+        return;
     }
 
-    // onSnapshot 觸發時若 modal 是開啟的，同步更新留言
-    onAuthStateChanged(auth, () => {}); // 確保 auth 初始化
-    // 透過監聽 allData 更新（在 loadData 的 onSnapshot 裡）自動觸發 openNotes 刷新
-    // 利用 MutationObserver 或直接在 snapshot callback 中刷新 modal
-    // 已在 onSnapshot 中呼叫 render()，並在 render 前檢查 modal
+    filtered.forEach(data => {
+        const wrap = document.createElement('div');
+        wrap.className = 'card-container';
+        wrap.id = `card-${data.id}`;
+        const typeKey = getTypeKey(data.type);
+        const noteCount = (data.comments || []).length;
 
-    // 在 loadData 的 onSnapshot 中額外處理 modal 刷新
-    // （重新定義，此處將 modal 刷新邏輯注入 render 之後）
-    const _origLoadData = loadData;
-    
-    // ── 送出留言 ─────────────────────────────────
-    document.getElementById('send-btn').onclick = async () => {
-        const input = document.getElementById('comment-input');
-        const text = input.value.trim();
-        if (!currentUser) { showToast('請先登入', 'error'); return; }
-        if (!text) { showToast('請輸入筆記內容', 'error'); return; }
-        try {
-            await updateDoc(doc(db, "flashcards", activeCardId), {
-                comments: arrayUnion({ user: currentUser.displayName, text })
-            });
-            input.value = "";
-            showToast('筆記已儲存', 'success');
-        } catch (err) {
-            console.error(err);
-            showToast('儲存失敗，請再試一次', 'error');
-        }
-    };
-
-    // Enter 鍵送出
-    document.getElementById('comment-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('send-btn').click();
+        wrap.innerHTML = `
+            <div class="card" onclick="this.classList.toggle('flipped')">
+                <div class="card-front">
+                    <span class="badge" style="background:var(--${typeKey})">${data.type || 'Other'}</span>
+                    <h3>${data.en || ''}</h3>
+                </div>
+                <div class="card-back">
+                    <h3>${data.ch || ''}</h3>
+                    ${noteCount > 0 ? `<div class="note-count">📝 ${noteCount} 則筆記</div>` : ''}
+                    <button 
+                        onclick="event.stopPropagation(); window.openNotes('${data.id}')" 
+                        style="cursor:pointer; padding:6px 14px; border:1px solid rgba(255,255,255,0.5); background:transparent; color:white; border-radius:5px;">
+                        📝 筆記留言
+                    </button>
+                </div>
+            </div>
+        `;
+        grid.appendChild(wrap);
     });
+}
 
-    // ── 關閉 Modal ───────────────────────────────
-    document.getElementById('close-modal-btn').onclick = () => {
+// ── 篩選按鈕 ────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-cat');
+        render();
+    };
+});
+
+// ── 地區篩選 ────────────────────────────────────────────
+document.querySelectorAll('#region-list li').forEach(li => {
+    li.onclick = () => {
+        const region = li.getAttribute('data-region');
+        if (currentRegion === region) {
+            currentRegion = null;
+            document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
+        } else {
+            currentRegion = region;
+            document.querySelectorAll('#region-list li').forEach(l => l.classList.remove('active-region'));
+            li.classList.add('active-region');
+        }
+        render();
+    };
+});
+
+// ── 開啟留言 Modal ──────────────────────────────────────
+window.openNotes = (id) => {
+    activeCardId = id;
+    const data = allData.find(d => d.id === id);
+    if (!data) return;
+    document.getElementById('modal-title').innerText = `${data.en} (${data.ch})`;
+    renderComments(data);
+    document.getElementById('commentModal').style.display = 'block';
+};
+
+// ── 渲染留言 ────────────────────────────────────────────
+function renderComments(data) {
+    const list = document.getElementById('comments-list');
+    if (!data.comments || data.comments.length === 0) {
+        list.innerHTML = '<p style="color:#95a5a6; text-align:center; padding:10px;">尚無筆記</p>';
+        return;
+    }
+    list.innerHTML = data.comments.map((c, idx) => {
+        const isOwner = currentUser && c.user === currentUser.displayName;
+        const timeStr = c.time ? formatTime({ toDate: () => new Date(c.time) }) : '';
+        return `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="comment-user">${c.user}</span>
+                    <span>
+                        <span class="comment-time">${timeStr}</span>
+                        ${isOwner ? `<button class="delete-btn" data-idx="${idx}">刪除</button>` : ''}
+                    </span>
+                </div>
+                ${renderCommentContent(c.text)}
+            </div>
+        `;
+    }).join('');
+
+    // 綁定刪除
+    list.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.onclick = async () => {
+            const idx = parseInt(btn.getAttribute('data-idx'));
+            const cardData = allData.find(d => d.id === activeCardId);
+            const commentToRemove = cardData.comments[idx];
+            const contentType = detectLinkType(commentToRemove.text) === 'text' ? '筆記' : '媒體';
+            try {
+                await updateDoc(doc(db, "flashcards", activeCardId), {
+                    comments: arrayRemove(commentToRemove)
+                });
+                await addAnnouncement('刪除', activeCardId, cardData.en, contentType);
+                showToast('已刪除', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('刪除失敗，請再試一次', 'error');
+            }
+        };
+    });
+}
+
+// ── 送出留言 ────────────────────────────────────────────
+document.getElementById('send-btn').onclick = async () => {
+    const input = document.getElementById('comment-input');
+    const text = input.value.trim();
+    if (!currentUser) { showToast('請先登入', 'error'); return; }
+    if (!text) { showToast('請輸入內容', 'error'); return; }
+
+    const cardData = allData.find(d => d.id === activeCardId);
+    const contentType = detectLinkType(text) === 'text' ? '筆記' : '媒體';
+
+    try {
+        await updateDoc(doc(db, "flashcards", activeCardId), {
+            comments: arrayUnion({ 
+                user: currentUser.displayName, 
+                text,
+                time: new Date().toISOString()
+            })
+        });
+        await addAnnouncement('新增', activeCardId, cardData.en, contentType);
+        input.value = "";
+        showToast('已儲存', 'success');
+    } catch (err) {
+        console.error(err);
+        showToast('儲存失敗，請再試一次', 'error');
+    }
+};
+
+document.getElementById('comment-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('send-btn').click();
+});
+
+// ── 關閉 Modal ──────────────────────────────────────────
+document.getElementById('close-modal-btn').onclick = () => {
+    document.getElementById('commentModal').style.display = 'none';
+};
+document.getElementById('commentModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('commentModal')) {
         document.getElementById('commentModal').style.display = 'none';
-    };
-
-    // 點擊背景關閉
-    document.getElementById('commentModal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('commentModal')) {
-            document.getElementById('commentModal').style.display = 'none';
-        }
-    });
+    }
+});
 </script>
 </body>
 </html>
