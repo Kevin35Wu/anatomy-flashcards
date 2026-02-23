@@ -66,19 +66,21 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 @media(max-width:1400px){.card-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:1000px){.card-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.card-grid{grid-template-columns:1fr;}}
-.ig-card{background:white;border-radius:10px;box-shadow:0 2px 10px rgba(63,86,97,0.08);overflow:visible;transition:transform 0.2s,box-shadow 0.2s;position:relative;}
-.ig-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(63,86,97,0.15);}
+.ig-card{background:white;border-radius:10px;box-shadow:0 2px 8px rgba(63,86,97,0.07),0 0 0 1px rgba(63,86,97,0.05);overflow:visible;transition:transform 0.2s,box-shadow 0.2s;position:relative;}
+.ig-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(63,86,97,0.13),0 0 0 1px rgba(63,86,97,0.06);}
 .ig-card-flip{perspective:1000px;height:175px;cursor:pointer;border-radius:10px 10px 0 0;overflow:hidden;}
 .ig-card-inner{width:100%;height:100%;transition:transform 0.55s;transform-style:preserve-3d;position:relative;}
 .ig-card-inner.flipped{transform:rotateY(180deg);}
 .ig-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;}
-.ig-front{background:linear-gradient(135deg,#3f5661 0%,#536e7a 100%);color:white;}
-.ig-back{background:linear-gradient(135deg,#5b8fa8 0%,#4a7c8f 100%);color:white;transform:rotateY(180deg);}
-.ig-badge{font-size:0.58rem;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.2);margin-bottom:8px;display:inline-block;}
-.ig-face h3{margin:0;font-size:clamp(0.78rem,1.2vw,1rem);word-break:break-word;line-height:1.4;}
-.ig-sub{font-size:0.7rem;opacity:0.65;margin-top:5px;}
+.ig-front{background:white;color:#2a3d45;border-left:4px solid var(--card-color,#7a96a4);}
+.ig-back{background:linear-gradient(135deg,#3f5661 0%,#536e7a 100%);color:white;transform:rotateY(180deg);}
+.ig-badge{font-size:0.58rem;padding:2px 8px;border-radius:10px;margin-bottom:8px;display:inline-block;font-weight:600;letter-spacing:0.03em;}
+.ig-face h3{margin:0;font-size:clamp(0.78rem,1.2vw,1rem);word-break:break-word;line-height:1.4;font-weight:600;}
+.ig-sub{font-size:0.7rem;opacity:0.55;margin-top:5px;}
+.ig-back .ig-sub{color:rgba(255,255,255,0.75);opacity:1;}
+.ig-back h3{color:white;}
 .ig-actions{display:flex;align-items:center;padding:9px 12px;gap:4px;border-top:1px solid #e6eff3;background:white;border-radius:0 0 10px 10px;}
-.ig-act-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:8px;display:flex;align-items:center;gap:4px;font-size:0.8rem;color:#555;transition:0.15s;line-height:1;}
+.ig-act-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:8px;display:flex;align-items:center;gap:4px;font-size:0.8rem;color:#6a8590;transition:0.15s;line-height:1;}
 .ig-act-btn:hover{background:var(--light);}
 .ig-act-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;transition:0.15s;}
 .ig-act-btn.heart-active svg{stroke:#e74c3c;fill:#e74c3c;}
@@ -601,17 +603,17 @@ window.adminDeleteCard=async(cardId,en)=>{
 function buildCard(data){
   const wrap=document.createElement('div');wrap.id=`card-${data.id}`;
   const color=getColor(data.type),isSaved=myBookmarks.has(data.id),likes=data.likes||[],iLiked=currentUser&&likes.includes(currentUser.uid),commentCount=(data.comments||[]).length;
-  wrap.innerHTML=`<div class="ig-card">
+  wrap.innerHTML=`<div class="ig-card" style="--card-color:${color}">
     <button class="admin-del-btn" onclick="window.adminDeleteCard('${data.id}','${(data.en||'').replace(/'/g,"\\'")}')">✕</button>
     <div class="ig-card-flip" onclick="this.querySelector('.ig-card-inner').classList.toggle('flipped')">
       <div class="ig-card-inner">
         <div class="ig-face ig-front">
-          <span class="ig-badge" style="background:${color}">${data.type||'Other'}</span>
+          <span class="ig-badge" style="background:${color};color:white;">${data.type||'Other'}</span>
           <h3>${data.en||''}</h3>
           <div class="ig-sub">點擊查看中文</div>
         </div>
         <div class="ig-face ig-back">
-          <span class="ig-badge" style="background:rgba(255,255,255,0.25)">${data.type||'Other'}</span>
+          <span class="ig-badge" style="background:rgba(255,255,255,0.18);color:white;">${data.type||'Other'}</span>
           <h3>${data.ch||''}</h3>
           <div class="ig-sub">點擊筆記留言 ↓</div>
         </div>
