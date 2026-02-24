@@ -45,7 +45,7 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .filter-btn.fav-active svg{stroke:white;fill:white;}
 .type-filter-btn{padding:6px 12px;border:1px solid #c8d8de;border-radius:20px;cursor:pointer;background:white;font-weight:500;transition:0.2s;font-size:0.78rem;color:#555;}
 .type-filter-btn:hover{background:var(--light);}
-.type-filter-btn.active{color:white;border-color:transparent;}
+.type-filter-btn.active{color:white;border-color:transparent;background:var(--main);}
 .add-card-btn{padding:6px 14px;background:var(--main);color:white;border:none;border-radius:20px;cursor:pointer;font-weight:500;font-size:0.8rem;transition:0.2s;margin-left:auto;}
 .add-card-btn:hover{background:var(--hover);}
 
@@ -442,7 +442,7 @@ function loadRegions(){
 }
 function renderRegionList(){
   const ul=document.getElementById('region-list');
-  ul.innerHTML=allRegions.map(r=>`<li data-region="${r.id}">${r.name}</li>`).join('');
+  ul.innerHTML=allRegions.map(r=>`<li data-region="${r.id}">${r.order?r.order+'. '+r.name:r.name}</li>`).join('');
   ul.querySelectorAll('li').forEach(li=>li.onclick=()=>{
     const r=li.getAttribute('data-region');
     if(currentRegion===r){
@@ -474,10 +474,9 @@ document.querySelectorAll('.filter-btn[data-cat]').forEach(btn=>btn.onclick=()=>
     document.querySelectorAll('.filter-btn[data-cat]').forEach(b=>{b.classList.remove('active','fav-active');});
     if(cat==='愛心')btn.classList.add('fav-active');
     else btn.classList.add('active');
-    // 清掉類型和部位
-    currentTypeFilter=null;currentRegion=null;
+    // 清掉類型篩選（保留部位）
+    currentTypeFilter=null;
     document.querySelectorAll('.type-filter-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('#region-list li').forEach(l=>l.classList.remove('active-region'));
   }
   render();
 });
@@ -680,15 +679,7 @@ function loadData(){
     if(modal.style.display==='block'&&activeCardId){const u=allData.find(d=>d.id===activeCardId);if(u)renderComments(u);}
   },err=>{console.error(err);showToast('資料載入失敗','error');});
 }
-function getColor(type){
-  const t=(type||'').toLowerCase();
-  if(t==='arteries')return'#C4956A';
-  if(t==='veins')return'#9B8AB4';
-  if(t==='muscles')return'#B07A5A';
-  if(t==='nerves')return'#7A9E8A';
-  if(t==='organs')return'#7B9BA8';
-  return'#B8C8CE';
-}
+function getColor(type){const t=(type||'').toLowerCase();if(t.includes('arteries'))return'#9B8AB4';if(t.includes('veins'))return'#9B8AB4';if(t.includes('muscle'))return'#B07A5A';if(t.includes('nerve'))return'#7A9E8A';if(t==='organs')return'#7B9BA8';return'#B8C8CE';}
 window.adminDeleteCard=async(cardId,en)=>{
   if(!confirm(`確定要刪除「${en}」嗎？`))return;
   try{await deleteDoc(doc(db,'flashcards',cardId));showToast(`「${en}」已刪除`,'success');}
@@ -733,8 +724,14 @@ function render(){
   const grid=document.getElementById('card-grid');grid.innerHTML='';
   if(deleteModeOn)grid.classList.add('delete-mode-active');else grid.classList.remove('delete-mode-active');
   let filtered=allData.filter(d=>{
-    if(currentSpecial==='收藏')return myBookmarks.has(d.id);
-    if(currentSpecial==='愛心')return currentUser&&(d.likes||[]).includes(currentUser.uid);
+    if(currentSpecial==='收藏'){
+      if(currentRegion!==null&&String(d.region)!==String(currentRegion))return false;
+      return myBookmarks.has(d.id);
+    }
+    if(currentSpecial==='愛心'){
+      if(currentRegion!==null&&String(d.region)!==String(currentRegion))return false;
+      return currentUser&&(d.likes||[]).includes(currentUser.uid);
+    }
     // 類型篩選
     if(currentTypeFilter&&(d.type||'')!==currentTypeFilter)return false;
     // 部位篩選
@@ -798,7 +795,10 @@ function renderComments(data){
     e.stopPropagation();
     const idx=parseInt(btn.getAttribute('data-idx')),cardData=allData.find(d=>d.id===activeCardId),cr=cardData.comments[idx],ct=detectLink(cr.text)==='text'?'筆記':'媒體';
     try{
-      await updateDoc(doc(db,'flashcards',activeCardId),{comments:arrayRemove(cr)});
+      const freshCard=allData.find(d=>d.id===activeCardId);
+      const newComments=[...freshCard.comments];
+      newComments.splice(idx,1);
+      await updateDoc(doc(db,'flashcards',activeCardId),{comments:newComments});
       await addDoc(collection(db,'announcements'),{user:currentUser.displayName,action:'刪除',cardEn:cardData.en,cardId:activeCardId,contentType:ct,time:new Date()});
       showToast('已刪除','success');
     }catch(e){console.error(e);}
