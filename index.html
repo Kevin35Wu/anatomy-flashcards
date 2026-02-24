@@ -442,7 +442,7 @@ function loadRegions(){
 }
 function renderRegionList(){
   const ul=document.getElementById('region-list');
-  ul.innerHTML=allRegions.map(r=>`<li data-region="${r.id}">${r.order?r.order+'. '+r.name:r.name}</li>`).join('');
+  ul.innerHTML=allRegions.map(r=>{const hasNum=/^\d/.test(r.name);const label=(!hasNum&&r.order)?r.order+'. '+r.name:r.name;return`<li data-region="${r.id}">${label}</li>`;}).join('');
   ul.querySelectorAll('li').forEach(li=>li.onclick=()=>{
     const r=li.getAttribute('data-region');
     if(currentRegion===r){
