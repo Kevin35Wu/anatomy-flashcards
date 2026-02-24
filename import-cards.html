@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>匯入單字卡工具</title>
+<style>
+body{font-family:"Microsoft JhengHei",sans-serif;max-width:700px;margin:40px auto;padding:20px;background:#f0f4f6;color:#3f5661;}
+h2{color:#3f5661;}
+.btn{padding:14px 28px;background:#3f5661;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:bold;margin:8px 4px;}
+.btn:hover{background:#7a96a4;}
+.btn:disabled{background:#9aacb4;cursor:not-allowed;}
+.btn-danger{background:#b07070;}.btn-danger:hover{background:#a05060;}
+#log{background:white;border-radius:8px;padding:16px;margin-top:20px;height:400px;overflow-y:auto;font-size:0.82rem;font-family:monospace;border:1px solid #c8d8de;}
+.ok{color:#4a7c6f;}.err{color:#b05555;}.info{color:#5b8fa8;}.warn{color:#c4956a;font-weight:bold;}
+.progress{background:#e6eff3;border-radius:6px;height:10px;margin:12px 0;}
+.progress-fill{background:#5b8fa8;height:100%;border-radius:6px;transition:width 0.3s;width:0%;}
+table{width:100%;font-size:0.82rem;border-collapse:collapse;margin:10px 0;}
+td,th{padding:5px 8px;border:1px solid #c8d8de;}
+th{background:#e6eff3;font-weight:bold;}
+</style>
+</head>
+<body>
+<h2>🦴 Anatomy Pro — 批次匯入工具</h2>
+<details><summary style="cursor:pointer;font-weight:bold;color:#5b8fa8;margin-bottom:8px;">📋 點開查看匯入內容</summary>
+<table>
+<tr><th>部位</th><th>張數</th><th>包含類型</th></tr>
+<tr><td>胸前壁</td><td>7</td><td>Muscles, Arteries, Nerves</td></tr>
+<tr><td>心與肺</td><td>23</td><td>Muscles, Arteries, Veins, Valves, Ligaments, Other</td></tr>
+<tr><td>後縱膈</td><td>25</td><td>Arteries, Veins, Nerves, Organs, Ligaments, Lymphatics</td></tr>
+<tr><td>腹前壁</td><td>18</td><td>Muscles, Arteries, Nerves, Ligaments, Other</td></tr>
+<tr><td>肝與消化道</td><td>30</td><td>Organs, Arteries, Veins, Other</td></tr>
+<tr><td>腎臟與其他</td><td>32</td><td>Organs, Arteries, Veins, Nerves, Muscles, Lymphatics</td></tr>
+<tr><th>合計</th><th>135 張</th><th>9 種類型</th></tr>
+</table></details>
+<p style="font-size:0.85rem;color:#b05555;font-weight:bold;">⚠️ 只能執行一次，避免重複匯入！</p>
+<div id="login-area"><button class="btn" id="login-btn">🔑 Google 登入</button></div>
+<div id="import-area" style="display:none;">
+  <p id="user-label" style="color:#4a7c6f;font-weight:bold;margin:8px 0;"></p>
+  <button class="btn" id="import-btn">🚀 開始匯入</button>
+  <button class="btn btn-danger" id="logout-btn">登出</button>
+  <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+  <div id="progress-label" style="font-size:0.82rem;color:#7a96a4;text-align:center;min-height:18px;"></div>
+</div>
+<div id="log"></div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import{getFirestore,collection,addDoc}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const cfg={apiKey:"AIzaSyB43JZQ7qXrcU_WkVHGEPeZdmicXcmjbq0",authDomain:"anatomy-dc089.firebaseapp.com",projectId:"anatomy-dc089",storageBucket:"anatomy-dc089.firebasestorage.app",messagingSenderId:"742909907454",appId:"1:742909907454:web:5afaaf70fc1b41247270af"};
+const app=initializeApp(cfg),db=getFirestore(app),auth=getAuth(),prov=new GoogleAuthProvider();
+function log(msg,cls='info'){const d=document.getElementById('log');d.innerHTML+=`<div class="${cls}">${msg}</div>`;d.scrollTop=d.scrollHeight;}
+function setProgress(pct,label=''){document.getElementById('progress-fill').style.width=pct+'%';document.getElementById('progress-label').textContent=label;}
+onAuthStateChanged(auth,user=>{
+  if(user){document.getElementById('login-area').style.display='none';document.getElementById('import-area').style.display='block';document.getElementById('user-label').textContent=`✅ 已登入：${user.displayName}`;}
+  else{document.getElementById('login-area').style.display='block';document.getElementById('import-area').style.display='none';}
+});
+document.getElementById('login-btn').onclick=()=>signInWithPopup(auth,prov);
+document.getElementById('logout-btn').onclick=()=>signOut(auth);
+
+const REGIONS=[
+  {key:'thorax-anterior',    name:'胸前壁',     order:6},
+  {key:'thorax-heart',       name:'心與肺',     order:7},
+  {key:'thorax-mediastinum', name:'後縱膈',     order:8},
+  {key:'abdomen-anterior',   name:'腹前壁',     order:9},
+  {key:'abdomen-liver',      name:'肝與消化道', order:10},
+  {key:'abdomen-kidney',     name:'腎臟與其他', order:11},
+];
+
+const CARDS=[
+  // 胸前壁
+  ['External intercostal m.','外肋間肌','Muscles','thorax-anterior'],
+  ['Internal intercostal m.','內肋間肌','Muscles','thorax-anterior'],
+  ['Innermost intercostal m.','最內肋間肌','Muscles','thorax-anterior'],
+  ['Transversus thoracis m.','胸橫肌','Muscles','thorax-anterior'],
+  ['Intercostal a. & v.','肋間動靜脈','Arteries','thorax-anterior'],
+  ['Internal thoracic a. & v.','胸廓內動靜脈','Arteries','thorax-anterior'],
+  ['Intercostal n.','肋間神經','Nerves','thorax-anterior'],
+  // 心與肺
+  ['Pulmonary a.','肺動脈','Arteries','thorax-heart'],
+  ['Pulmonary v.','肺靜脈','Veins','thorax-heart'],
+  ['Pectinate m.','梳狀肌','Muscles','thorax-heart'],
+  ['Crista terminalis','界嵴','Other','thorax-heart'],
+  ['Fossa ovalis','卵圓窩','Other','thorax-heart'],
+  ['Trabeculae carneae','肉柱','Other','thorax-heart'],
+  ['Papillary m.','乳頭肌','Muscles','thorax-heart'],
+  ['Chordae tendineae','腱索','Other','thorax-heart'],
+  ['Tricuspid valve','三尖瓣','Other','thorax-heart'],
+  ['Mitral valve','二尖瓣（僧帽瓣）','Other','thorax-heart'],
+  ['Aortic valve','主動脈瓣','Other','thorax-heart'],
+  ['Pulmonary valve','肺動脈瓣','Other','thorax-heart'],
+  ['Ascending aorta','升主動脈','Arteries','thorax-heart'],
+  ['Pulmonary trunk','肺動脈幹','Arteries','thorax-heart'],
+  ['Left coronary a.','左冠狀動脈','Arteries','thorax-heart'],
+  ['Circumflex branch','旋支','Arteries','thorax-heart'],
+  ['Anterior interventricular a.','前室間動脈','Arteries','thorax-heart'],
+  ['Right coronary a.','右冠狀動脈','Arteries','thorax-heart'],
+  ['Posterior interventricular a.','後室間動脈','Arteries','thorax-heart'],
+  ['Superior vena cava','上腔靜脈','Veins','thorax-heart'],
+  ['Inferior vena cava','下腔靜脈','Veins','thorax-heart'],
+  ['Coronary sinus','冠狀竇','Veins','thorax-heart'],
+  ['Great cardiac v.','心大靜脈','Veins','thorax-heart'],
+  ['Middle cardiac v.','心中靜脈','Veins','thorax-heart'],
+  ['Anterior cardiac v.','心前靜脈','Veins','thorax-heart'],
+  // 後縱膈
+  ['Aortic arch','主動脈弓','Arteries','thorax-mediastinum'],
+  ['Brachiocephalic trunk','頭臂幹','Arteries','thorax-mediastinum'],
+  ['Left common carotid a.','左頸總動脈','Arteries','thorax-mediastinum'],
+  ['Left subclavian a.','左鎖骨下動脈','Arteries','thorax-mediastinum'],
+  ['Thoracic aorta','胸主動脈','Arteries','thorax-mediastinum'],
+  ['Azygos v.','奇靜脈','Veins','thorax-mediastinum'],
+  ['Hemiazygos v.','半奇靜脈','Veins','thorax-mediastinum'],
+  ['Accessory hemiazygos v.','副半奇靜脈','Veins','thorax-mediastinum'],
+  ['Esophagus','食道','Organs','thorax-mediastinum'],
+  ['Trachea','氣管','Organs','thorax-mediastinum'],
+  ['Carina','氣管隆突','Organs','thorax-mediastinum'],
+  ['Thoracic duct','胸管','Other','thorax-mediastinum'],
+  ['Ligamentum arteriosum','動脈韌帶','Other','thorax-mediastinum'],
+  ['Phrenic n.','膈神經','Nerves','thorax-mediastinum'],
+  ['Left vagus n.','左迷走神經','Nerves','thorax-mediastinum'],
+  ['Left recurrent laryngeal n.','左喉返神經','Nerves','thorax-mediastinum'],
+  ['Right vagus n.','右迷走神經','Nerves','thorax-mediastinum'],
+  ['Right recurrent laryngeal n.','右喉返神經','Nerves','thorax-mediastinum'],
+  ['Anterior vagal trunk','前迷走幹','Nerves','thorax-mediastinum'],
+  ['Posterior vagal trunk','後迷走幹','Nerves','thorax-mediastinum'],
+  ['Esophageal plexus','食道叢','Nerves','thorax-mediastinum'],
+  ['Thoracic sympathetic trunk','胸部交感幹','Nerves','thorax-mediastinum'],
+  ['Gray ramus communicans','灰交通支','Nerves','thorax-mediastinum'],
+  ['White ramus communicans','白交通支','Nerves','thorax-mediastinum'],
+  ['Greater splanchnic n.','大內臟神經','Nerves','thorax-mediastinum'],
+  // 腹前壁
+  ['External oblique m.','腹外斜肌','Muscles','abdomen-anterior'],
+  ['Internal oblique m.','腹內斜肌','Muscles','abdomen-anterior'],
+  ['Transversus abdominis m.','腹橫肌','Muscles','abdomen-anterior'],
+  ['Rectus abdominis m.','腹直肌','Muscles','abdomen-anterior'],
+  ['Inguinal ligament','腹股溝韌帶','Other','abdomen-anterior'],
+  ['Superficial inguinal ring','腹股溝管淺環','Other','abdomen-anterior'],
+  ['Deep inguinal ring','腹股溝管深環','Other','abdomen-anterior'],
+  ['Arcuate line','弓狀線','Other','abdomen-anterior'],
+  ['Conjoint tendon','聯合腱','Other','abdomen-anterior'],
+  ['Spermatic cord','精索','Other','abdomen-anterior'],
+  ['Ilioinguinal n.','髂腹股溝神經','Nerves','abdomen-anterior'],
+  ['Superior epigastric a.','腹壁上動脈','Arteries','abdomen-anterior'],
+  ['Inferior epigastric a.','腹壁下動脈','Arteries','abdomen-anterior'],
+  ['Hepatoduodenal ligament','肝十二指腸韌帶','Other','abdomen-anterior'],
+  ['Hepatogastric ligament','肝胃韌帶','Other','abdomen-anterior'],
+  ['Lesser omentum','小網膜','Other','abdomen-anterior'],
+  ['Greater omentum','大網膜','Other','abdomen-anterior'],
+  ['Omental foramen','網膜孔（Winslow孔）','Other','abdomen-anterior'],
+  // 肝與消化道
+  ['Right lobe of liver','肝右葉','Organs','abdomen-liver'],
+  ['Left lobe of liver','肝左葉','Organs','abdomen-liver'],
+  ['Caudate lobe','尾狀葉','Organs','abdomen-liver'],
+  ['Quadrate lobe','方葉','Organs','abdomen-liver'],
+  ['Gallbladder','膽囊','Organs','abdomen-liver'],
+  ['Cystic duct','膽囊管','Organs','abdomen-liver'],
+  ['Hepatic portal v.','肝門靜脈','Veins','abdomen-liver'],
+  ['Hepatic a. proper','肝固有動脈','Arteries','abdomen-liver'],
+  ['Common bile duct','總膽管','Organs','abdomen-liver'],
+  ['Left gastric a.','胃左動脈','Arteries','abdomen-liver'],
+  ['Splenic a.','脾動脈','Arteries','abdomen-liver'],
+  ['Common hepatic a.','肝總動脈','Arteries','abdomen-liver'],
+  ['Gastroduodenal a.','胃十二指腸動脈','Arteries','abdomen-liver'],
+  ['Stomach','胃','Organs','abdomen-liver'],
+  ['Pancreas','胰臟','Organs','abdomen-liver'],
+  ['Duodenum','十二指腸','Organs','abdomen-liver'],
+  ['Hepatopancreatic ampulla','肝胰壺腹','Organs','abdomen-liver'],
+  ['Major duodenal papilla','十二指腸大乳頭','Organs','abdomen-liver'],
+  ['Jejunum','空腸','Organs','abdomen-liver'],
+  ['Ileum','迴腸','Organs','abdomen-liver'],
+  ['Arteriae rectae','直動脈','Arteries','abdomen-liver'],
+  ['Arcades (intestinal)','腸動脈弓','Arteries','abdomen-liver'],
+  ['Cecum','盲腸','Organs','abdomen-liver'],
+  ['Appendix','闌尾','Organs','abdomen-liver'],
+  ['Ileocecal lips','迴盲瓣唇','Other','abdomen-liver'],
+  ['Opening of the appendix','闌尾開口','Other','abdomen-liver'],
+  ['Colon','結腸','Organs','abdomen-liver'],
+  ['Haustra','結腸袋','Other','abdomen-liver'],
+  ['Tenia coli','結腸帶','Other','abdomen-liver'],
+  ['Omental appendages','腸脂垂','Other','abdomen-liver'],
+  // 腎臟與其他
+  ['Renal a. & v.','腎動靜脈','Arteries','abdomen-kidney'],
+  ['Renal pelvis','腎盂','Organs','abdomen-kidney'],
+  ['Renal capsule','腎包膜','Other','abdomen-kidney'],
+  ['Renal cortex','腎皮質','Other','abdomen-kidney'],
+  ['Minor calyx','小腎盞','Organs','abdomen-kidney'],
+  ['Major calyx','大腎盞','Organs','abdomen-kidney'],
+  ['Ureter','輸尿管','Organs','abdomen-kidney'],
+  ['Suprarenal gland','腎上腺','Organs','abdomen-kidney'],
+  ['Superior suprarenal a.','腎上腺上動脈','Arteries','abdomen-kidney'],
+  ['Middle suprarenal a.','腎上腺中動脈','Arteries','abdomen-kidney'],
+  ['Inferior suprarenal a.','腎上腺下動脈','Arteries','abdomen-kidney'],
+  ['Suprarenal v.','腎上腺靜脈','Veins','abdomen-kidney'],
+  ['Gonadal a.','性腺動脈','Arteries','abdomen-kidney'],
+  ['Gonadal v.','性腺靜脈','Veins','abdomen-kidney'],
+  ['Abdominal aorta','腹主動脈','Arteries','abdomen-kidney'],
+  ['Celiac trunk','腹腔幹','Arteries','abdomen-kidney'],
+  ['Superior mesenteric a.','腸繫膜上動脈','Arteries','abdomen-kidney'],
+  ['Inferior mesenteric a.','腸繫膜下動脈','Arteries','abdomen-kidney'],
+  ['Inferior vena cava (abdomen)','下腔靜脈（腹部）','Veins','abdomen-kidney'],
+  ['Inferior phrenic a.','膈下動脈','Arteries','abdomen-kidney'],
+  ['Cisterna chyli','乳糜池','Other','abdomen-kidney'],
+  ['Subcostal n.','肋下神經','Nerves','abdomen-kidney'],
+  ['Iliohypogastric n.','髂腹下神經','Nerves','abdomen-kidney'],
+  ['Genitofemoral n.','生殖股神經','Nerves','abdomen-kidney'],
+  ['Lateral femoral cutaneous n.','股外側皮神經','Nerves','abdomen-kidney'],
+  ['Femoral n.','股神經','Nerves','abdomen-kidney'],
+  ['Obturator n.','閉孔神經','Nerves','abdomen-kidney'],
+  ['Diaphragm','橫膈','Muscles','abdomen-kidney'],
+  ['Quadratus lumborum m.','腰方肌','Muscles','abdomen-kidney'],
+  ['Psoas major m.','腰大肌','Muscles','abdomen-kidney'],
+  ['Psoas minor m.','腰小肌','Muscles','abdomen-kidney'],
+  ['Iliacus m.','髂肌','Muscles','abdomen-kidney'],
+];
+
+document.getElementById('import-btn').onclick=async()=>{
+  const user=auth.currentUser;
+  if(!user){alert('請先登入');return;}
+  if(!confirm(`確定匯入 6 個部位 + ${CARDS.length} 張單字卡？\n⚠️ 只能執行一次！`))return;
+  const btn=document.getElementById('import-btn');
+  btn.disabled=true;btn.textContent='匯入中...';
+  document.getElementById('log').innerHTML='';
+  log('═══ 開始匯入 ═══','warn');
+  log(`\n📍 新增 ${REGIONS.length} 個部位...`,'info');
+  const ridMap={};
+  for(const r of REGIONS){
+    try{
+      const ref=await addDoc(collection(db,'regions'),{name:r.name,order:r.order});
+      ridMap[r.key]=ref.id;
+      log(`  ✅ ${r.name}`,'ok');
+    }catch(e){log(`  ❌ ${r.name}: ${e.message}`,'err');}
+  }
+  log(`\n🃏 新增 ${CARDS.length} 張單字卡...`,'info');
+  let ok=0,fail=0;
+  for(let i=0;i<CARDS.length;i++){
+    const[en,ch,type,rkey]=CARDS[i];
+    setProgress(Math.round((i+1)/CARDS.length*100),`${i+1}/${CARDS.length} — ${en}`);
+    try{
+      await addDoc(collection(db,'flashcards'),{en,ch,type,region:ridMap[rkey]||rkey,comments:[],likes:[],createdBy:user.displayName,createdByUid:user.uid,createdAt:new Date().toISOString()});
+      log(`  ✅ [${type}] ${en} → ${ch}`,'ok');ok++;
+    }catch(e){log(`  ❌ ${en}: ${e.message}`,'err');fail++;}
+  }
+  setProgress(100,'完成！');
+  log('\n═══ 完成 ═══','warn');
+  log(`✅ 成功：${ok} 張`,'ok');
+  if(fail>0)log(`❌ 失敗：${fail} 張`,'err');
+  log('✨ 重新整理 Anatomy Pro 即可看到新單字卡！','warn');
+  btn.textContent='✅ 完成';
+};
+</script>
+</body>
+</html>
