@@ -592,7 +592,7 @@ function loadData(){
     if(modal.style.display==='block'&&activeCardId){const u=allData.find(d=>d.id===activeCardId);if(u)renderComments(u);}
   },err=>{console.error(err);showToast('資料載入失敗','error');});
 }
-function getColor(type){const t=(type||'').toLowerCase();if(t.includes('arteries')||t.includes('veins'))return'#9B8AB4';if(t.includes('muscle'))return'#C4956A';if(t.includes('nerve'))return'#7A9E8A';return'#B8C8CE';}
+function getColor(type){const t=(type||'').toLowerCase();if(t.includes('arteries'))return'#C4956A';if(t.includes('veins'))return'#9B8AB4';if(t.includes('muscle'))return'#B07A5A';if(t.includes('nerve'))return'#7A9E8A';if(t==='organs')return'#7B9BA8';return'#B8C8CE';}
 
 window.adminDeleteCard=async(cardId,en)=>{
   if(!confirm(`確定要刪除「${en}」嗎？`))return;
