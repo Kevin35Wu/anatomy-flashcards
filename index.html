@@ -5,67 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Anatomy Pro</title>
 <style>
-:root{--muscle:#c0704a;--nerve:#8fa8b0;--vessel:#b05555;--other:#7a96a4;--main:#3f5661;--green:#4a7c6f;--teal:#5b8fa8;--hover:#7a96a4;--light:#e6eff3;--bg:#f0f4f6;}
+:root{--muscle:#B07A5A;--nerve:#7A9E8A;--vessel:#9B8AB4;--organs:#7B9BA8;--other:#B8C8CE;--main:#3f5661;--green:#4a7c6f;--teal:#5b8fa8;--hover:#7a96a4;--light:#e6eff3;--bg:#edf2f4;}
 *{box-sizing:border-box;}
 body{font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif;margin:0;background:#edf2f4;display:flex;}
-nav{width:220px;background:var(--main);color:white;height:100vh;height:-webkit-fill-available;padding:15px 12px;padding-bottom:max(15px,env(safe-area-inset-bottom));position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;-webkit-overflow-scrolling:touch;}
-.nav-logo{font-size:1rem;font-weight:700;letter-spacing:0.02em;border-bottom:1px solid #455a6a;padding-bottom:8px;margin-bottom:10px;}
+
+/* ── NAV ── */
+nav{width:220px;background:var(--main);color:white;height:100vh;height:-webkit-fill-available;padding:15px 12px;padding-bottom:max(15px,env(safe-area-inset-bottom));position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;-webkit-overflow-scrolling:touch;}
+.nav-logo{font-size:1rem;font-weight:700;letter-spacing:0.02em;border-bottom:1px solid #455a6a;padding-bottom:8px;margin-bottom:10px;flex-shrink:0;}
 .nav-btn{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:0.83rem;transition:0.2s;margin-bottom:3px;border:none;background:none;color:white;width:100%;text-align:left;}
 .nav-btn:hover{background:#536e7a;}
 .nav-btn.active{background:var(--hover);font-weight:600;}
-.nav-divider{border:none;border-top:1px solid #455a6a;margin:8px 0;}
-#region-list{list-style:none;padding:0;margin:0 0 6px;overflow-y:auto;flex-shrink:1;max-height:180px;}
+.nav-divider{border:none;border-top:1px solid #455a6a;margin:8px 0;flex-shrink:0;}
+.region-label{font-size:0.72rem;color:#7f8c8d;padding:4px 10px 4px;flex-shrink:0;}
+#region-list{list-style:none;padding:0;margin:0 0 6px;flex-shrink:0;}
 #region-list li{padding:7px 10px;cursor:pointer;border-radius:4px;transition:0.2s;font-size:0.78rem;color:#bdc3c7;}
 #region-list li:hover{background:#536e7a;color:white;}
 #region-list li.active-region{background:var(--hover);color:white;}
-.region-label{font-size:0.72rem;color:#7f8c8d;padding:4px 10px 2px;}
-.drive-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px;background:#4a7c6f;color:white;text-decoration:none;border-radius:6px;font-size:0.78rem;transition:0.2s;margin-bottom:3px;}
+.drive-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px;background:#4a7c6f;color:white;text-decoration:none;border-radius:6px;font-size:0.78rem;transition:0.2s;margin-bottom:3px;flex-shrink:0;}
 .drive-btn:hover{background:#3d6b5f;}
-.drive-hint{font-size:0.68rem;color:#7f8c8d;margin:0 0 8px;padding:0 2px;}
+.drive-hint{font-size:0.68rem;color:#7f8c8d;margin:0 0 8px;padding:0 2px;flex-shrink:0;}
+.nav-action-btn{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:0.83rem;transition:0.2s;margin-bottom:3px;border:none;background:rgba(255,255,255,0.08);color:white;width:100%;text-align:left;}
+.nav-action-btn:hover{background:rgba(255,255,255,0.15);}
+.nav-action-btn.del-active{background:rgba(176,112,112,0.4);color:#ffaaaa;}
 .user-box{background:rgba(255,255,255,0.07);padding:10px;border-radius:8px;margin-top:auto;text-align:center;flex-shrink:0;min-height:60px;position:relative;}
-@media not all and (min-resolution:.001dpcm){@supports(-webkit-appearance:none){nav{height:100%;}}}
-  nav{width:180px;}
-  main{margin-left:180px;}
-  .card-grid{grid-template-columns:repeat(2,1fr);}
-  .nav-logo{font-size:0.88rem;}
-  .nav-btn{font-size:0.78rem;padding:8px 8px;}
-  #region-list li{font-size:0.72rem;}
-}
-@media(max-width:600px){
-  nav{width:160px;}
-  main{margin-left:160px;}
-  .card-grid{grid-template-columns:1fr;}
-  .top-filter{gap:5px;padding:8px 12px;}
-  .filter-btn{width:52px;font-size:0.72rem;}
-}
+
+/* ── MAIN ── */
 main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:column;}
 .panel{display:none;flex:1;flex-direction:column;min-height:100vh;}
 .panel.active{display:flex;}
 
-/* ── 頂部篩選列 ── */
-.top-filter{position:sticky;top:0;z-index:100;background:#fff;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(63,86,97,0.1);align-items:center;}
-.filter-btn{padding:6px 0;border:1px solid #c8d8de;border-radius:20px;cursor:pointer;background:white;font-weight:500;transition:0.2s;font-size:0.8rem;width:64px;text-align:center;}
+/* ── 頂部篩選 ── */
+.top-filter{position:sticky;top:0;z-index:100;background:white;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(63,86,97,0.1);align-items:center;}
+.filter-btn{padding:6px 0;border:1px solid #c8d8de;border-radius:20px;cursor:pointer;background:white;font-weight:500;transition:0.2s;font-size:0.8rem;width:64px;text-align:center;display:flex;align-items:center;justify-content:center;}
 .filter-btn:hover{background:var(--light);border-color:var(--hover);}
 .filter-btn.active{background:var(--main);color:white;border-color:var(--main);}
-.filter-btn.special-btn.active[data-cat="愛心"]{background:#e74c3c;border-color:#e74c3c;color:white;}
-.filter-btn.bookmark-filter-btn{display:flex;align-items:center;justify-content:center;width:64px;padding:5px 0;}
-.filter-btn.bookmark-filter-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.filter-btn.bookmark-filter-btn.active svg{stroke:white;fill:white;}
-.filter-btn.bookmark-filter-btn.active[data-cat="愛心"]{background:#e74c3c;border-color:#e74c3c;}
-.add-card-btn{padding:6px 14px;background:var(--main);color:white;border:none;border-radius:20px;cursor:pointer;font-weight:500;font-size:0.8rem;transition:0.2s;}
+.filter-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.filter-btn.active svg{stroke:white;fill:white;}
+.filter-btn.fav-active{background:#e74c3c !important;border-color:#e74c3c !important;color:white;}
+.filter-btn.fav-active svg{stroke:white;fill:white;}
+.type-filter-btn{padding:6px 12px;border:1px solid #c8d8de;border-radius:20px;cursor:pointer;background:white;font-weight:500;transition:0.2s;font-size:0.78rem;color:#555;}
+.type-filter-btn:hover{background:var(--light);}
+.type-filter-btn.active{color:white;border-color:transparent;}
+.add-card-btn{padding:6px 14px;background:var(--main);color:white;border:none;border-radius:20px;cursor:pointer;font-weight:500;font-size:0.8rem;transition:0.2s;margin-left:auto;}
 .add-card-btn:hover{background:var(--hover);}
-.delete-mode-btn{padding:6px 14px;background:white;color:#b05555;border:1px solid #b05555;border-radius:20px;cursor:pointer;font-weight:bold;font-size:0.8rem;transition:0.2s;}
-.delete-mode-btn.active{background:#b05555;color:white;}
-.delete-mode-btn:hover{background:#b05555;color:white;}
-.quiz-start-btn{margin-left:auto;padding:6px 16px;background:var(--teal);color:white;border:none;border-radius:20px;cursor:pointer;font-weight:500;font-size:0.8rem;}
-.quiz-start-btn:hover{background:var(--hover);}
 
-/* ── IG 卡片 ── */
+/* ── CARDS ── */
 .container{padding:15px 20px 30px;}
 .card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 @media(max-width:1400px){.card-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:1000px){.card-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.card-grid{grid-template-columns:1fr;}}
+@media(max-width:900px){nav{width:180px;}main{margin-left:180px;}.nav-logo{font-size:0.88rem;}.nav-btn{font-size:0.78rem;padding:8px;}.filter-btn{width:52px;font-size:0.72rem;}}
+@media(max-width:600px){nav{width:160px;}main{margin-left:160px;}.card-grid{grid-template-columns:1fr;}.top-filter{gap:5px;padding:8px 12px;}}
 .ig-card{background:white;border-radius:10px;box-shadow:0 2px 8px rgba(63,86,97,0.07),0 0 0 1px rgba(63,86,97,0.05);overflow:visible;transition:transform 0.2s,box-shadow 0.2s;position:relative;}
 .ig-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(63,86,97,0.13),0 0 0 1px rgba(63,86,97,0.06);}
 .ig-card-flip{perspective:1000px;height:175px;cursor:pointer;border-radius:10px 10px 0 0;overflow:hidden;}
@@ -74,11 +64,10 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .ig-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;}
 .ig-front{background:white;color:#2a3d45;}
 .ig-back{background:linear-gradient(135deg,#3f5661 0%,#536e7a 100%);color:white;transform:rotateY(180deg);}
-.ig-badge{font-size:0.58rem;padding:2px 8px;border-radius:10px;margin-bottom:8px;display:inline-block;font-weight:600;letter-spacing:0.03em;}
-.ig-face h3{margin:0;font-size:clamp(0.78rem,1.2vw,1rem);word-break:break-word;line-height:1.4;font-weight:600;}
-.ig-sub{font-size:0.7rem;opacity:0.55;margin-top:5px;}
-.ig-back .ig-sub{color:rgba(255,255,255,0.75);opacity:1;}
 .ig-back h3{color:white;}
+.ig-back .ig-sub{color:rgba(255,255,255,0.6);opacity:1;}
+.ig-badge{font-size:0.58rem;padding:2px 8px;border-radius:10px;margin-bottom:8px;display:inline-block;font-weight:600;letter-spacing:0.03em;color:white;}
+.ig-face h3{margin:0;font-size:clamp(0.78rem,1.2vw,1rem);word-break:break-word;line-height:1.4;font-weight:600;}
 .ig-actions{display:flex;align-items:center;padding:9px 12px;gap:4px;border-top:1px solid #e6eff3;background:white;border-radius:0 0 10px 10px;}
 .ig-act-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:8px;display:flex;align-items:center;gap:4px;font-size:0.8rem;color:#6a8590;transition:0.15s;line-height:1;}
 .ig-act-btn:hover{background:var(--light);}
@@ -89,7 +78,6 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .ig-act-btn.saved-active{color:var(--main);}
 .ig-count{font-size:0.8rem;font-weight:600;}
 .ig-spacer{flex:1;}
-/* 管理員刪除按鈕（刪除模式時出現） */
 .admin-del-btn{position:absolute;top:-8px;left:-8px;z-index:10;background:#b05555;border:2px solid white;border-radius:50%;width:26px;height:26px;cursor:pointer;color:white;font-size:0.8rem;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:transform 0.2s;font-weight:bold;}
 .admin-del-btn:hover{transform:scale(1.15);}
 .delete-mode-active .admin-del-btn{display:flex;}
@@ -97,7 +85,7 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .spinner{width:34px;height:34px;border:4px solid #ddd;border-top-color:var(--main);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ── 公告 ── */
+/* ── ANNOUNCE ── */
 .panel-header{background:white;padding:16px 24px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:600;color:var(--main);box-shadow:0 1px 4px rgba(63,86,97,0.08);flex-shrink:0;}
 .announce-page{padding:20px 24px;flex:1;overflow-y:auto;}
 .announce-card{background:white;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 2px 6px rgba(63,86,97,0.06);display:flex;align-items:center;gap:12px;transition:0.2s;border-left:3px solid var(--teal);}
@@ -112,28 +100,35 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .ac-goto{padding:5px 12px;background:var(--main);color:white;border:none;border-radius:5px;cursor:pointer;font-size:0.78rem;flex-shrink:0;}
 .announce-empty{text-align:center;padding:60px;color:#95a5a6;}
 
-/* ── 聊天室 ── */
+/* ── CHAT ── */
 .chat-messages{flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;background:var(--bg);}
 .chat-msg{display:flex;gap:10px;align-items:flex-start;max-width:72%;}
 .chat-msg.me{flex-direction:row-reverse;align-self:flex-end;}
 .chat-msg .avatar{width:34px;height:34px;border-radius:50%;background:var(--main);display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:white;flex-shrink:0;overflow:hidden;}
 .chat-msg .avatar img{width:100%;height:100%;object-fit:cover;}
-.chat-bubble{background:white;border-radius:10px;padding:8px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.08);max-width:100%;cursor:pointer;}
+.chat-bubble{background:white;border-radius:10px;padding:8px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.08);max-width:100%;cursor:pointer;position:relative;}
 .chat-msg.me .chat-bubble{background:var(--main);color:white;}
 .cb-name{font-size:0.72rem;color:#95a5a6;margin-bottom:3px;font-weight:bold;}
 .chat-msg.me .cb-name{color:rgba(255,255,255,0.75);}
 .cb-text{font-size:0.88rem;word-break:break-word;}
+.cb-recalled{font-size:0.82rem;color:#aaa;font-style:italic;}
+.chat-msg.me .cb-recalled{color:rgba(255,255,255,0.5);}
 .cb-time{font-size:0.68rem;color:#95a5a6;margin-top:3px;text-align:right;}
 .chat-msg.me .cb-time{color:rgba(255,255,255,0.65);}
 .chat-date-divider{text-align:center;font-size:0.72rem;color:#95a5a6;padding:5px 0;}
-/* 回復預覽 */
+/* 長按選單 */
+.chat-ctx-menu{position:fixed;background:white;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:6px 0;z-index:500;min-width:130px;display:none;}
+.chat-ctx-menu.show{display:block;}
+.ctx-item{padding:10px 16px;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:8px;transition:0.15s;}
+.ctx-item:hover{background:var(--light);}
+.ctx-item.danger{color:#b05555;}
+/* 回復 */
 .reply-preview{background:rgba(0,0,0,0.05);border-left:3px solid var(--teal);border-radius:4px;padding:4px 8px;margin-bottom:4px;font-size:0.75rem;color:#555;}
-.chat-msg.me .reply-preview{background:rgba(255,255,255,0.2);border-left-color:rgba(255,255,255,0.7);color:rgba(255,255,255,0.85);}
-/* 回復輸入列 */
+.chat-msg.me .reply-preview{background:rgba(255,255,255,0.15);border-left-color:rgba(255,255,255,0.6);color:rgba(255,255,255,0.8);}
 .reply-bar{background:var(--light);border-top:1px solid #c8d8de;padding:6px 16px;display:none;align-items:center;gap:8px;font-size:0.82rem;color:#555;flex-shrink:0;}
 .reply-bar.show{display:flex;}
 .reply-bar-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.reply-cancel{background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1rem;padding:0;flex-shrink:0;}
+.reply-cancel{background:none;border:none;cursor:pointer;color:#b05555;font-size:1rem;padding:0;flex-shrink:0;}
 /* 輸入列 */
 .chat-input-bar{background:white;padding:10px 16px;border-top:1px solid #eee;display:flex;gap:8px;align-items:center;flex-shrink:0;}
 .chat-input-bar input{flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:24px;outline:none;font-size:0.88rem;font-family:inherit;}
@@ -141,14 +136,13 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .emoji-btn{background:none;border:none;cursor:pointer;font-size:1.3rem;padding:4px;border-radius:6px;transition:0.15s;flex-shrink:0;}
 .emoji-btn:hover{background:var(--light);}
 .chat-send-btn{padding:10px 18px;background:var(--main);color:white;border:none;border-radius:24px;cursor:pointer;font-weight:500;font-size:0.85rem;flex-shrink:0;}
-/* Emoji 選單 */
+.chat-area{position:relative;display:flex;flex-direction:column;flex:1;overflow:hidden;}
 .emoji-picker{position:absolute;bottom:70px;left:16px;background:white;border-radius:10px;box-shadow:0 4px 20px rgba(63,86,97,0.18);padding:10px;display:none;flex-wrap:wrap;gap:4px;width:260px;z-index:200;}
 .emoji-picker.show{display:flex;}
 .emoji-opt{font-size:1.4rem;cursor:pointer;padding:4px;border-radius:6px;transition:0.15s;border:none;background:none;}
-.emoji-opt:hover{background:#f5f5f5;transform:scale(1.2);}
-.chat-area{position:relative;display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.emoji-opt:hover{background:var(--light);transform:scale(1.2);}
 
-/* ── Modal 通用 ── */
+/* ── MODAL ── */
 .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);}
 .modal-content{background:#fff;margin:3% auto;padding:22px;width:90%;max-width:520px;border-radius:10px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(63,86,97,0.15);}
 .modal-content h2{margin-top:0;font-size:1.05rem;}
@@ -165,17 +159,25 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .submit-btn:hover{background:var(--hover);}
 .submit-btn:disabled{background:#95a5a6;cursor:not-allowed;}
 .close-btn{width:100%;margin-top:10px;padding:9px;border:none;background:var(--light);cursor:pointer;border-radius:5px;}
-/* 留言 */
-.comment-item{background:#f0f4f6;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:0.85rem;}
-.comment-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-wrap:wrap;gap:4px;}
+
+/* ── 留言 ── */
+.comment-item{background:#f0f4f6;padding:10px 12px;border-radius:8px;margin-bottom:8px;font-size:0.85rem;position:relative;}
+.comment-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
 .comment-user{font-weight:600;color:var(--main);}
+.comment-meta{display:flex;align-items:center;gap:6px;}
 .comment-time{font-size:0.72rem;color:#95a5a6;}
-.del-comment-btn{background:none;border:none;cursor:pointer;color:#e74c3c;font-size:0.75rem;padding:0;}
+.like-btn-c{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:6px;transition:0.15s;}
+.like-btn-c svg{width:13px;height:13px;fill:none;stroke:#95a5a6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:0.15s;}
+.like-btn-c.liked svg{stroke:#e74c3c;fill:#e74c3c;}
+.like-count{font-size:0.72rem;color:#95a5a6;}
+.like-btn-c.liked .like-count{color:#e74c3c;}
+.comment-more-btn{background:none;border:none;cursor:pointer;color:#95a5a6;font-size:1.1rem;padding:0 2px;line-height:1;border-radius:4px;transition:0.15s;}
+.comment-more-btn:hover{background:#dde5ea;color:var(--main);}
+.comment-dropdown{position:absolute;right:10px;top:32px;background:white;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:4px 0;z-index:50;display:none;min-width:100px;}
+.comment-dropdown.show{display:block;}
+.comment-dropdown button{display:block;width:100%;padding:8px 14px;background:none;border:none;cursor:pointer;font-size:0.83rem;text-align:left;color:#b05555;}
+.comment-dropdown button:hover{background:var(--light);}
 .comment-body{word-break:break-word;}
-.comment-footer{display:flex;align-items:center;gap:8px;margin-top:6px;}
-.like-btn-c{background:none;border:1px solid #ddd;border-radius:20px;padding:2px 10px;cursor:pointer;font-size:0.78rem;transition:0.2s;}
-.like-btn-c:hover{background:var(--light);border-color:var(--hover);}
-.like-btn-c.liked{background:var(--light);border-color:var(--hover);color:var(--main);}
 .comment-item img{max-width:100%;border-radius:6px;margin-top:6px;cursor:pointer;display:block;}
 .comment-item iframe{width:100%;height:195px;border:none;border-radius:6px;margin-top:6px;display:block;}
 .drive-preview-link{display:flex;align-items:center;gap:8px;background:#e8f5e9;padding:7px 10px;border-radius:6px;margin-top:6px;text-decoration:none;color:#27ae60;font-size:0.8rem;}
@@ -186,10 +188,11 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 
 /* ── 測驗 ── */
 #quizModal .modal-content{max-width:540px;}
-.quiz-region-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;}
-.quiz-region-chip{padding:6px 14px;border:1px solid #ddd;border-radius:20px;cursor:pointer;font-size:0.82rem;transition:0.2s;background:white;}
-.quiz-region-chip:hover{border-color:var(--hover);}
-.quiz-region-chip.selected{background:var(--main);color:white;border-color:var(--main);}
+.quiz-region-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px;}
+.quiz-chip{padding:6px 14px;border:1px solid #ddd;border-radius:20px;cursor:pointer;font-size:0.82rem;transition:0.2s;background:white;}
+.quiz-chip:hover{border-color:var(--hover);}
+.quiz-chip.selected{background:var(--main);color:white;border-color:var(--main);}
+.quiz-section-label{font-size:0.78rem;font-weight:bold;color:var(--main);margin:10px 0 6px;}
 .quiz-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:0.85rem;color:#666;}
 .quiz-progress-bar{height:5px;background:#eee;border-radius:3px;margin-bottom:16px;overflow:hidden;}
 .quiz-progress-fill{height:100%;background:var(--teal);transition:width 0.4s;}
@@ -206,7 +209,7 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .quiz-result-btns{display:flex;gap:10px;margin-top:18px;}
 .quiz-result-btns button{flex:1;padding:11px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;}
 
-/* ── Toast & Lightbox ── */
+/* ── TOAST & LIGHTBOX ── */
 .toast{position:fixed;bottom:25px;right:25px;z-index:9999;background:#3f5661;color:white;padding:10px 18px;border-radius:8px;font-size:0.88rem;transform:translateY(100px);opacity:0;transition:all 0.3s ease;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.error{background:#b05555;}
@@ -215,6 +218,7 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 .lightbox.show{display:flex;}
 .lightbox img{max-width:90%;max-height:90vh;border-radius:8px;}
 .lightbox-close{position:absolute;top:20px;right:30px;color:white;font-size:2rem;cursor:pointer;}
+@media not all and (min-resolution:.001dpcm){@supports(-webkit-appearance:none){nav{height:100%;}}}
 </style>
 </head>
 <body>
@@ -223,6 +227,10 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
   <button class="nav-btn active" data-panel="cards">📚 單字卡</button>
   <button class="nav-btn" data-panel="announce">📢 公告動態</button>
   <button class="nav-btn" data-panel="chat">💬 聊天室</button>
+  <hr class="nav-divider">
+  <button class="nav-action-btn" id="quiz-nav-btn">🎯 開始測驗</button>
+  <button class="nav-action-btn" id="add-card-btn">＋ 新增單字卡</button>
+  <button class="nav-action-btn" id="delete-mode-btn" style="display:none;">🗑 刪除模式</button>
   <hr class="nav-divider">
   <div class="region-label">📍 部位篩選</div>
   <ul id="region-list"></ul>
@@ -233,41 +241,38 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 </nav>
 
 <main>
-  <!-- 單字卡面板 -->
+  <!-- 單字卡 -->
   <div class="panel active" id="panel-cards">
-    <div class="top-filter">
+    <div class="top-filter" id="top-filter">
       <button class="filter-btn active" data-cat="全部">全部</button>
-      <button class="filter-btn" data-cat="Muscles">肌肉</button>
-      <button class="filter-btn" data-cat="Nerves">神經</button>
-      <button class="filter-btn" data-cat="Vessel">血管</button>
-      <button class="filter-btn" data-cat="Other">其他</button>
-      <button class="filter-btn bookmark-filter-btn special-btn" data-cat="收藏" title="我的收藏">
+      <button class="type-filter-btn" data-type="Muscles">肌肉</button>
+      <button class="type-filter-btn" data-type="Nerves">神經</button>
+      <button class="type-filter-btn" data-type="Arteries">動脈</button>
+      <button class="type-filter-btn" data-type="Veins">靜脈</button>
+      <button class="type-filter-btn" data-type="Organs">器官</button>
+      <button class="type-filter-btn" data-type="Other">其他</button>
+      <button class="filter-btn" data-cat="收藏" title="我的收藏">
         <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <button class="filter-btn bookmark-filter-btn special-btn" data-cat="愛心" title="我的愛心">
+      <button class="filter-btn" data-cat="愛心" title="我的愛心">
         <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
-      <button class="add-card-btn" id="add-card-btn">＋ 新增</button>
-      <button class="delete-mode-btn" id="delete-mode-btn" style="display:none;">🗑 刪除</button>
-      <button class="quiz-start-btn" id="quiz-start-btn">🎯 測驗</button>
+      <button class="add-card-btn" id="add-card-top-btn" style="display:none;">＋ 新增</button>
     </div>
     <div class="container"><div id="card-grid" class="card-grid"><div class="loading-state"><h2>🔒 請先登入</h2></div></div></div>
   </div>
-
-  <!-- 公告面板 -->
+  <!-- 公告 -->
   <div class="panel" id="panel-announce">
     <div class="panel-header">📢 公告動態</div>
     <div class="announce-page" id="announce-page"><div class="announce-empty">⏳ 請先登入</div></div>
   </div>
-
-  <!-- 聊天室面板 -->
+  <!-- 聊天室 -->
   <div class="panel" id="panel-chat">
     <div class="panel-header">💬 聊天室</div>
     <div class="chat-area">
       <div class="chat-messages" id="chat-messages"><div class="announce-empty" style="margin:auto;">⏳ 請先登入</div></div>
       <div class="reply-bar" id="reply-bar">
-        <span>↩ 回復：</span>
-        <span class="reply-bar-text" id="reply-bar-text"></span>
+        <span>↩ 回復：</span><span class="reply-bar-text" id="reply-bar-text"></span>
         <button class="reply-cancel" id="reply-cancel">✕</button>
       </div>
       <div class="emoji-picker" id="emoji-picker"></div>
@@ -279,6 +284,12 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
     </div>
   </div>
 </main>
+
+<!-- 聊天室右鍵選單 -->
+<div class="chat-ctx-menu" id="chat-ctx-menu">
+  <div class="ctx-item" id="ctx-reply">↩ 回復此訊息</div>
+  <div class="ctx-item danger" id="ctx-recall" style="display:none;">🗑 收回訊息</div>
+</div>
 
 <!-- 新增單字卡 Modal -->
 <div id="addCardModal" class="modal">
@@ -297,6 +308,7 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
           <option value="Nerves">Nerves 神經</option>
           <option value="Arteries">Arteries 動脈</option>
           <option value="Veins">Veins 靜脈</option>
+          <option value="Organs">Organs 器官</option>
           <option value="Other">Other 其他</option>
         </select>
       </div>
@@ -339,13 +351,13 @@ import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut}fro
 const ADMIN_UID='XMxcwjPrj7VlcpNBrStyGKPAvL03';
 const cfg={apiKey:"AIzaSyB43JZQ7qXrcU_WkVHGEPeZdmicXcmjbq0",authDomain:"anatomy-dc089.firebaseapp.com",projectId:"anatomy-dc089",storageBucket:"anatomy-dc089.firebasestorage.app",messagingSenderId:"742909907454",appId:"1:742909907454:web:5afaaf70fc1b41247270af"};
 const app=initializeApp(cfg),db=getFirestore(app),auth=getAuth(),prov=new GoogleAuthProvider();
-let allData=[],currentFilter='全部',currentRegion=null,currentUser=null,activeCardId=null,myBookmarks=new Set(),chatLoaded=false,allRegions=[],deleteModeOn=false,replyTo=null;
 
-// SVG icons
+let allData=[],currentTypeFilter=null,currentRegion=null,currentSpecial=null,currentUser=null,activeCardId=null,myBookmarks=new Set(),chatLoaded=false,allRegions=[],deleteModeOn=false,replyTo=null,ctxMsgId=null,ctxMsgUid=null;
+
 const SVG_HEART=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 const SVG_COMMENT=`<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 const SVG_BOOKMARK=`<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
-
+const SVG_HEART_SMALL=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 const EMOJIS=['😊','😂','❤️','👍','🔥','💯','😍','🥳','😅','🤔','👏','💪','📚','✅','❌','🙏','😭','🤣','😮','🎉'];
 
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className='toast';},3000);}
@@ -385,10 +397,10 @@ onAuthStateChanged(auth,async user=>{
     box.innerHTML=`<img src="${user.photoURL}" style="width:30px;border-radius:50%;border:2px solid white;"><br><small style="font-size:0.76rem;">${user.displayName}</small><br><button id="logout-btn" style="margin-top:4px;cursor:pointer;padding:2px 8px;border-radius:4px;font-size:0.76rem;">登出</button>`;
     document.getElementById('logout-btn').onclick=()=>signOut(auth);
     document.getElementById('chat-input-bar').style.display='flex';
-    if(user.uid===ADMIN_UID)document.getElementById('delete-mode-btn').style.display='block';
+    if(user.uid===ADMIN_UID){document.getElementById('delete-mode-btn').style.display='block';}
     await loadBookmarks();
     loadData();loadRegions();loadAnnouncements();loadChat();chatLoaded=true;
-  } else {
+  }else{
     currentUser=null;myBookmarks.clear();chatLoaded=false;deleteModeOn=false;
     box.innerHTML=`<button id="login-btn" style="width:100%;padding:8px;cursor:pointer;border-radius:5px;font-size:0.82rem;">🔑 Google 登入</button>`;
     document.getElementById('login-btn').onclick=()=>signInWithPopup(auth,prov).catch(()=>showToast('登入失敗','error'));
@@ -398,12 +410,12 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 
-// ── 刪除模式（管理員） ──
+// ── 刪除模式 ──
 document.getElementById('delete-mode-btn').onclick=()=>{
   deleteModeOn=!deleteModeOn;
-  document.getElementById('delete-mode-btn').classList.toggle('active',deleteModeOn);
+  document.getElementById('delete-mode-btn').classList.toggle('del-active',deleteModeOn);
   document.getElementById('card-grid').classList.toggle('delete-mode-active',deleteModeOn);
-  showToast(deleteModeOn?'🗑 刪除模式開啟，點 ✕ 刪除卡片':'刪除模式已關閉',deleteModeOn?'error':'');
+  showToast(deleteModeOn?'🗑 刪除模式開啟':'刪除模式已關閉',deleteModeOn?'error':'');
 };
 
 // ── 書籤 ──
@@ -433,8 +445,11 @@ function renderRegionList(){
   ul.innerHTML=allRegions.map(r=>`<li data-region="${r.id}">${r.name}</li>`).join('');
   ul.querySelectorAll('li').forEach(li=>li.onclick=()=>{
     const r=li.getAttribute('data-region');
-    if(currentRegion===r){currentRegion=null;ul.querySelectorAll('li').forEach(l=>l.classList.remove('active-region'));}
-    else{currentRegion=r;ul.querySelectorAll('li').forEach(l=>l.classList.remove('active-region'));li.classList.add('active-region');}
+    if(currentRegion===r){
+      currentRegion=null;ul.querySelectorAll('li').forEach(l=>l.classList.remove('active-region'));
+    }else{
+      currentRegion=r;ul.querySelectorAll('li').forEach(l=>l.classList.remove('active-region'));li.classList.add('active-region');
+    }
     render();
   });
 }
@@ -443,9 +458,55 @@ function renderRegionSelect(){
   sel.innerHTML='<option value="">請選擇部位</option>'+allRegions.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
 }
 
+// ── 篩選邏輯（類型 AND 部位）──
+// 頂部：全部 | 類型chips | 收藏 | 愛心
+// 側邊：部位（與類型AND組合）
+// 收藏/愛心 時忽略類型和部位
+
+document.querySelectorAll('.filter-btn[data-cat]').forEach(btn=>btn.onclick=()=>{
+  const cat=btn.getAttribute('data-cat');
+  // toggle special
+  if(currentSpecial===cat){
+    currentSpecial=null;
+    btn.classList.remove('active','fav-active');
+  }else{
+    currentSpecial=cat;
+    document.querySelectorAll('.filter-btn[data-cat]').forEach(b=>{b.classList.remove('active','fav-active');});
+    if(cat==='愛心')btn.classList.add('fav-active');
+    else btn.classList.add('active');
+    // 清掉類型和部位
+    currentTypeFilter=null;currentRegion=null;
+    document.querySelectorAll('.type-filter-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#region-list li').forEach(l=>l.classList.remove('active-region'));
+  }
+  render();
+});
+document.querySelectorAll('.filter-btn[data-cat="全部"]').forEach(btn=>btn.onclick=()=>{
+  currentSpecial=null;currentTypeFilter=null;currentRegion=null;
+  document.querySelectorAll('.filter-btn[data-cat]').forEach(b=>b.classList.remove('active','fav-active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.type-filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#region-list li').forEach(l=>l.classList.remove('active-region'));
+  render();
+});
+document.querySelectorAll('.type-filter-btn').forEach(btn=>btn.onclick=()=>{
+  const t=btn.getAttribute('data-type');
+  if(currentTypeFilter===t){
+    currentTypeFilter=null;btn.classList.remove('active');
+  }else{
+    currentTypeFilter=t;
+    document.querySelectorAll('.type-filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    // 取消收藏/愛心
+    currentSpecial=null;
+    document.querySelectorAll('.filter-btn[data-cat]').forEach(b=>b.classList.remove('active','fav-active'));
+    document.querySelector('.filter-btn[data-cat="全部"]').classList.remove('active');
+  }
+  render();
+});
+
 // ── 新增單字卡 ──
-let isNewRegion=false;
-document.getElementById('add-card-btn').onclick=()=>{
+function openAddCard(){
   if(!currentUser){showToast('請先登入','error');return;}
   ['new-en','new-ch'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('new-type').value='';
@@ -456,7 +517,10 @@ document.getElementById('add-card-btn').onclick=()=>{
   document.getElementById('toggle-region-btn').textContent='＋ 新部位';
   isNewRegion=false;
   document.getElementById('addCardModal').style.display='block';
-};
+}
+document.getElementById('add-card-btn').onclick=openAddCard;
+document.getElementById('add-card-top-btn').onclick=openAddCard;
+let isNewRegion=false;
 document.getElementById('toggle-region-btn').onclick=()=>{
   isNewRegion=!isNewRegion;
   document.getElementById('new-region-input').style.display=isNewRegion?'block':'none';
@@ -473,7 +537,7 @@ document.getElementById('submit-card-btn').onclick=async()=>{
     if(!regionName){showToast('請輸入新部位名稱','error');return;}
     try{const ref=await addDoc(collection(db,'regions'),{name:regionName,order:allRegions.length+1});regionId=ref.id;}
     catch(e){showToast('新增部位失敗','error');return;}
-  } else {
+  }else{
     regionId=document.getElementById('new-region-sel').value;
     if(!regionId){showToast('請選擇部位','error');return;}
     regionName=allRegions.find(r=>r.id===regionId)?.name||regionId;
@@ -484,8 +548,7 @@ document.getElementById('submit-card-btn').onclick=async()=>{
     const cardRef=await addDoc(collection(db,'flashcards'),{en,ch,type,region:regionId,comments:[],likes:[],createdBy:currentUser.displayName,createdByUid:currentUser.uid,createdAt:new Date().toISOString()});
     await addDoc(collection(db,'announcements'),{user:currentUser.displayName,action:'新增',cardEn:en,cardId:cardRef.id,contentType:'單字卡',regionName,time:new Date()});
     document.getElementById('addCardModal').style.display='none';
-    showToast(`「${en}」已新增！`,'success');
-    isNewRegion=false;
+    showToast(`「${en}」已新增！`,'success');isNewRegion=false;
   }catch(e){console.error(e);showToast('新增失敗','error');}
   finally{btn.disabled=false;btn.textContent='✅ 新增單字卡';}
 };
@@ -500,7 +563,7 @@ function loadAnnouncements(){
     page.innerHTML=snap.docs.map(d=>{
       const a=d.data();let icon,desc,cardId=a.cardId||'';
       if(a.contentType==='單字卡'){icon='🃏';desc=`<b>${a.user}</b> 新增了單字卡 <span class="ac-card-name">${a.cardEn}</span>（${a.regionName||''}）`;}
-      else if(a.contentType==='媒體'){icon='🖼️';desc=`<b>${a.user}</b> 在 <span class="ac-card-name">${a.cardEn}</span> 新增了${a.action==='刪除'?'並刪除了':''}媒體`;}
+      else if(a.contentType==='媒體'){icon='🖼️';desc=`<b>${a.user}</b> 在 <span class="ac-card-name">${a.cardEn}</span> 新增了媒體`;}
       else{icon='📝';desc=`<b>${a.user}</b> ${a.action==='刪除'?'刪除了':'新增了'}筆記在 <span class="ac-card-name">${a.cardEn}</span>`;}
       const clickable=!!cardId;
       return`<div class="announce-card ${clickable?'clickable':''}" ${clickable?`onclick="window.jumpToCard('${cardId}')"`:''}><div class="ac-icon">${icon}</div><div class="ac-body"><div class="ac-main">${desc}</div><div class="ac-time">${fmtTime(a.time)}</div></div>${clickable?`<button class="ac-goto" onclick="event.stopPropagation();window.jumpToCard('${cardId}')">前往</button>`:''}</div>`;
@@ -508,9 +571,10 @@ function loadAnnouncements(){
   });
 }
 window.jumpToCard=cardId=>{
-  switchPanel('cards');currentFilter='全部';currentRegion=null;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  switchPanel('cards');currentTypeFilter=null;currentRegion=null;currentSpecial=null;
+  document.querySelectorAll('.filter-btn[data-cat]').forEach(b=>b.classList.remove('active','fav-active'));
   document.querySelector('.filter-btn[data-cat="全部"]').classList.add('active');
+  document.querySelectorAll('.type-filter-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('#region-list li').forEach(l=>l.classList.remove('active-region'));
   render();
   setTimeout(()=>{
@@ -521,18 +585,45 @@ window.jumpToCard=cardId=>{
 };
 
 // ── 聊天室 ──
-// Emoji picker
 const picker=document.getElementById('emoji-picker');
-EMOJIS.forEach(em=>{
-  const btn=document.createElement('button');btn.className='emoji-opt';btn.textContent=em;
-  btn.onclick=()=>{document.getElementById('chat-input').value+=em;picker.classList.remove('show');document.getElementById('chat-input').focus();};
-  picker.appendChild(btn);
-});
+EMOJIS.forEach(em=>{const btn=document.createElement('button');btn.className='emoji-opt';btn.textContent=em;btn.onclick=()=>{document.getElementById('chat-input').value+=em;picker.classList.remove('show');document.getElementById('chat-input').focus();};picker.appendChild(btn);});
 document.getElementById('emoji-btn').onclick=e=>{e.stopPropagation();picker.classList.toggle('show');};
-document.addEventListener('click',()=>picker.classList.remove('show'));
-
-// 回復功能
+document.addEventListener('click',e=>{picker.classList.remove('show');const menu=document.getElementById('chat-ctx-menu');if(!menu.contains(e.target))menu.classList.remove('show');});
 document.getElementById('reply-cancel').onclick=()=>{replyTo=null;document.getElementById('reply-bar').classList.remove('show');};
+
+// 長按/右鍵選單
+function showCtxMenu(e,msgId,msgUid,msgText,isRecalled){
+  e.preventDefault();e.stopPropagation();
+  ctxMsgId=msgId;ctxMsgUid=msgUid;
+  const menu=document.getElementById('chat-ctx-menu');
+  const reply=document.getElementById('ctx-reply');
+  const recall=document.getElementById('ctx-recall');
+  reply.style.display=isRecalled?'none':'flex';
+  recall.style.display=(currentUser&&msgUid===currentUser.uid&&!isRecalled)?'flex':'none';
+  const x=Math.min(e.clientX,window.innerWidth-150),y=Math.min(e.clientY,window.innerHeight-100);
+  menu.style.left=x+'px';menu.style.top=y+'px';
+  menu.classList.add('show');
+  // store text for reply
+  menu._replyText=msgText;
+}
+document.getElementById('ctx-reply').onclick=()=>{
+  const menu=document.getElementById('chat-ctx-menu');
+  if(!ctxMsgId)return;
+  const msgs=document.querySelectorAll('.chat-msg');
+  let user='',text=menu._replyText||'';
+  msgs.forEach(m=>{if(m.getAttribute('data-id')===ctxMsgId){user=m.getAttribute('data-user')||'';}});
+  replyTo={id:ctxMsgId,user,text};
+  document.getElementById('reply-bar-text').textContent=`${user}：${text}`;
+  document.getElementById('reply-bar').classList.add('show');
+  document.getElementById('chat-input').focus();
+  menu.classList.remove('show');
+};
+document.getElementById('ctx-recall').onclick=async()=>{
+  const menu=document.getElementById('chat-ctx-menu');menu.classList.remove('show');
+  if(!ctxMsgId||!currentUser)return;
+  try{await updateDoc(doc(db,'chatMessages',ctxMsgId),{recalled:true,text:'[已收回]'});showToast('訊息已收回','success');}
+  catch(e){console.error(e);showToast('收回失敗','error');}
+};
 
 function loadChat(){
   onSnapshot(query(collection(db,'chatMessages'),orderBy('time','asc')),snap=>{
@@ -541,19 +632,18 @@ function loadChat(){
     let lastDate='';
     c.innerHTML=snap.docs.map(d=>{
       const m=d.data(),isMe=currentUser&&m.userId===currentUser.uid;
+      const isRecalled=!!m.recalled;
       const msgDate=m.time?(m.time.toDate?m.time.toDate():new Date(m.time)).toDateString():'';
       let divider='';
-      if(msgDate&&msgDate!==lastDate){
-        lastDate=msgDate;const dObj=m.time.toDate?m.time.toDate():new Date(m.time);
-        divider=`<div class="chat-date-divider">── ${dObj.getFullYear()}/${dObj.getMonth()+1}/${dObj.getDate()} ──</div>`;
-      }
-      const replyHtml=m.replyTo?`<div class="reply-preview">↩ ${m.replyTo.user}：${m.replyTo.text.slice(0,40)}${m.replyTo.text.length>40?'...':''}</div>`:'';
-      return`${divider}<div class="chat-msg ${isMe?'me':''}" data-id="${d.id}" data-user="${m.user}" data-text="${(m.text||'').replace(/"/g,'&quot;')}">
-        <div class="avatar">${m.photoURL?`<img src="${m.photoURL}" alt="">`:m.user.charAt(0)}</div>
-        <div class="chat-bubble" onclick="window.setReply('${d.id}','${m.user.replace(/'/g,"\\'")}','${(m.text||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">
-          ${!isMe?`<div class="cb-name">${m.user}</div>`:''}
-          ${replyHtml}
-          <div class="cb-text">${m.text}</div>
+      if(msgDate&&msgDate!==lastDate){lastDate=msgDate;const dObj=m.time.toDate?m.time.toDate():new Date(m.time);divider=`<div class="chat-date-divider">── ${dObj.getFullYear()}/${dObj.getMonth()+1}/${dObj.getDate()} ──</div>`;}
+      const replyHtml=m.replyTo&&!isRecalled?`<div class="reply-preview">↩ ${m.replyTo.user}：${(m.replyTo.text||'').slice(0,40)}</div>`:'';
+      const bodyHtml=isRecalled?`<div class="cb-recalled">此訊息已收回</div>`:`<div class="cb-text">${m.text}</div>`;
+      const safeText=(m.text||'').replace(/'/g,"\\'").replace(/\n/g,' ');
+      return`${divider}<div class="chat-msg ${isMe?'me':''}" data-id="${d.id}" data-user="${(m.user||'').replace(/"/g,'')}" data-uid="${m.userId||''}" oncontextmenu="window._chatCtx(event,'${d.id}','${m.userId||''}','${safeText}',${isRecalled})">
+        <div class="avatar">${m.photoURL?`<img src="${m.photoURL}" alt="">`:((m.user||'?').charAt(0))}</div>
+        <div class="chat-bubble" onclick="window._chatClick(event,'${d.id}','${m.userId||''}','${safeText}',${isRecalled})">
+          ${!isMe&&!isRecalled?`<div class="cb-name">${m.user}</div>`:''}
+          ${replyHtml}${bodyHtml}
           <div class="cb-time">${fmtChat(m.time)}</div>
         </div>
       </div>`;
@@ -561,23 +651,21 @@ function loadChat(){
     setTimeout(()=>{c.scrollTop=c.scrollHeight;},50);
   });
 }
-
-window.setReply=(id,user,text)=>{
-  replyTo={id,user,text};
-  document.getElementById('reply-bar-text').textContent=`${user}：${text}`;
-  document.getElementById('reply-bar').classList.add('show');
-  document.getElementById('chat-input').focus();
+window._chatCtx=showCtxMenu;
+let tapTimer=null;
+window._chatClick=(e,id,uid,text,recalled)=>{
+  // mobile long press simulation via double-click shortcut
+  if(tapTimer){clearTimeout(tapTimer);tapTimer=null;showCtxMenu(e,id,uid,text,recalled);}
+  else{tapTimer=setTimeout(()=>{tapTimer=null;},300);}
 };
 
 async function sendChat(){
   const inp=document.getElementById('chat-input'),text=inp.value.trim();
   if(!currentUser){showToast('請先登入','error');return;}if(!text)return;
-  const msg={user:currentUser.displayName,userId:currentUser.uid,photoURL:currentUser.photoURL||'',text,time:serverTimestamp()};
+  const msg={user:currentUser.displayName,userId:currentUser.uid,photoURL:currentUser.photoURL||'',text,time:serverTimestamp(),recalled:false};
   if(replyTo)msg.replyTo={id:replyTo.id,user:replyTo.user,text:replyTo.text};
-  inp.value='';replyTo=null;
-  document.getElementById('reply-bar').classList.remove('show');
-  try{await addDoc(collection(db,'chatMessages'),msg);}
-  catch(e){console.error(e);showToast('送出失敗','error');}
+  inp.value='';replyTo=null;document.getElementById('reply-bar').classList.remove('show');
+  try{await addDoc(collection(db,'chatMessages'),msg);}catch(e){console.error(e);showToast('送出失敗','error');}
 }
 document.getElementById('chat-send-btn').onclick=sendChat;
 document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey)sendChat();});
@@ -592,8 +680,15 @@ function loadData(){
     if(modal.style.display==='block'&&activeCardId){const u=allData.find(d=>d.id===activeCardId);if(u)renderComments(u);}
   },err=>{console.error(err);showToast('資料載入失敗','error');});
 }
-function getColor(type){const t=(type||'').toLowerCase();if(t.includes('arteries'))return'#C4956A';if(t.includes('veins'))return'#9B8AB4';if(t.includes('muscle'))return'#B07A5A';if(t.includes('nerve'))return'#7A9E8A';if(t==='organs')return'#7B9BA8';return'#B8C8CE';}
-
+function getColor(type){
+  const t=(type||'').toLowerCase();
+  if(t==='arteries')return'#C4956A';
+  if(t==='veins')return'#9B8AB4';
+  if(t==='muscles')return'#B07A5A';
+  if(t==='nerves')return'#7A9E8A';
+  if(t==='organs')return'#7B9BA8';
+  return'#B8C8CE';
+}
 window.adminDeleteCard=async(cardId,en)=>{
   if(!confirm(`確定要刪除「${en}」嗎？`))return;
   try{await deleteDoc(doc(db,'flashcards',cardId));showToast(`「${en}」已刪除`,'success');}
@@ -608,14 +703,12 @@ function buildCard(data){
     <div class="ig-card-flip" onclick="this.querySelector('.ig-card-inner').classList.toggle('flipped')">
       <div class="ig-card-inner">
         <div class="ig-face ig-front">
-          <span class="ig-badge" style="background:${color};color:white;">${data.type||'Other'}</span>
+          <span class="ig-badge" style="background:${color}">${data.type||'Other'}</span>
           <h3>${data.en||''}</h3>
-          <div class="ig-sub">點擊查看中文</div>
         </div>
         <div class="ig-face ig-back">
           <span class="ig-badge" style="background:rgba(255,255,255,0.18);color:white;">${data.type||'Other'}</span>
           <h3>${data.ch||''}</h3>
-          <div class="ig-sub">點擊筆記留言 ↓</div>
         </div>
       </div>
     </div>
@@ -639,22 +732,23 @@ function buildCard(data){
 function render(){
   const grid=document.getElementById('card-grid');grid.innerHTML='';
   if(deleteModeOn)grid.classList.add('delete-mode-active');else grid.classList.remove('delete-mode-active');
-  const filtered=allData.filter(d=>{
-    if(currentFilter==='收藏')return myBookmarks.has(d.id);
-    if(currentFilter==='愛心')return currentUser&&(d.likes||[]).includes(currentUser.uid);
+  let filtered=allData.filter(d=>{
+    if(currentSpecial==='收藏')return myBookmarks.has(d.id);
+    if(currentSpecial==='愛心')return currentUser&&(d.likes||[]).includes(currentUser.uid);
+    // 類型篩選
+    if(currentTypeFilter&&(d.type||'')!==currentTypeFilter)return false;
+    // 部位篩選
     if(currentRegion!==null&&String(d.region)!==String(currentRegion))return false;
-    if(currentFilter==='全部')return true;
-    if(currentFilter==='Vessel')return(d.type||'').toLowerCase().includes('arteries')||(d.type||'').toLowerCase().includes('veins');
-    return(d.type||'').toLowerCase()===currentFilter.toLowerCase();
+    return true;
   });
-  if(filtered.length===0){const msg=currentFilter==='收藏'?'還沒有收藏的單字卡':currentFilter==='愛心'?'還沒有按過愛心的單字卡':'此分類目前沒有資料';grid.innerHTML=`<div class="empty-state"><p style="font-size:2rem;">${currentFilter==='收藏'?'🔖':currentFilter==='愛心'?'❤️':'🔍'}</p><p>${msg}</p></div>`;return;}
+  if(filtered.length===0){
+    let msg='此分類目前沒有資料',icon='🔍';
+    if(currentSpecial==='收藏'){msg='還沒有收藏的單字卡';icon='🔖';}
+    if(currentSpecial==='愛心'){msg='還沒有按過愛心的單字卡';icon='❤️';}
+    grid.innerHTML=`<div class="empty-state"><p style="font-size:2rem;">${icon}</p><p>${msg}</p></div>`;return;
+  }
   filtered.forEach(d=>grid.appendChild(buildCard(d)));
 }
-
-document.querySelectorAll('.filter-btn').forEach(btn=>btn.onclick=()=>{
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');currentFilter=btn.getAttribute('data-cat');render();
-});
 
 // ── 留言 Modal ──
 window.openNotes=id=>{
@@ -666,17 +760,42 @@ function renderComments(data){
   const list=document.getElementById('comments-list');
   if(!data.comments||data.comments.length===0){list.innerHTML='<p style="color:#95a5a6;text-align:center;padding:10px;">尚無筆記</p>';return;}
   list.innerHTML=data.comments.map((c,idx)=>{
-    const isOwner=currentUser&&c.user===currentUser.displayName,likes=c.likes||[],iLiked=currentUser&&likes.includes(currentUser.displayName),timeStr=c.time?fmtTime({toDate:()=>new Date(c.time)}):'';
-    return`<div class="comment-item"><div class="comment-header"><span class="comment-user">${c.user}</span><span style="display:flex;align-items:center;gap:6px;"><span class="comment-time">${timeStr}</span><button class="like-btn-c ${iLiked?'liked':''}" data-idx="${idx}" style="display:flex;align-items:center;gap:3px;padding:2px 8px;"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:${iLiked?'#e74c3c':'none'};stroke:${iLiked?'#e74c3c':'currentColor'};stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${likes.length||''}</button>${isOwner?`<button class="del-comment-btn" data-idx="${idx}">刪除</button>`:''}</span></div>${renderContent(c.text)}</div>`;
+    const isOwner=currentUser&&c.user===currentUser.displayName;
+    const likes=c.likes||[],iLiked=currentUser&&likes.includes(currentUser.displayName);
+    const timeStr=c.time?fmtTime({toDate:()=>new Date(c.time)}):'';
+    return`<div class="comment-item">
+      <div class="comment-header">
+        <span class="comment-user">${c.user}</span>
+        <span class="comment-meta">
+          <span class="comment-time">${timeStr}</span>
+          <button class="like-btn-c ${iLiked?'liked':''}" data-idx="${idx}">${SVG_HEART_SMALL}<span class="like-count">${likes.length||''}</span></button>
+          ${isOwner?`<button class="comment-more-btn" data-idx="${idx}">···</button><div class="comment-dropdown" id="cdrop-${idx}"><button class="del-comment-btn" data-idx="${idx}">刪除</button></div>`:''}
+        </span>
+      </div>
+      ${renderContent(c.text)}
+    </div>`;
   }).join('');
-  list.querySelectorAll('.like-btn-c').forEach(btn=>btn.onclick=async()=>{
+
+  // 三點選單
+  list.querySelectorAll('.comment-more-btn').forEach(btn=>btn.onclick=e=>{
+    e.stopPropagation();
+    const idx=btn.getAttribute('data-idx');
+    const drop=document.getElementById(`cdrop-${idx}`);
+    document.querySelectorAll('.comment-dropdown').forEach(d=>{if(d!==drop)d.classList.remove('show');});
+    drop.classList.toggle('show');
+  });
+  document.addEventListener('click',()=>document.querySelectorAll('.comment-dropdown').forEach(d=>d.classList.remove('show')),{once:true});
+
+  list.querySelectorAll('.like-btn-c').forEach(btn=>btn.onclick=async e=>{
+    e.stopPropagation();
     if(!currentUser){showToast('請先登入','error');return;}
-    const idx=parseInt(btn.getAttribute('data-idx')),cardData=allData.find(d=>d.id===activeCardId),c=cardData.comments[idx],likes=c.likes||[],iLiked=likes.includes(currentUser.displayName);
-    const nc={...c,likes:iLiked?likes.filter(l=>l!==currentUser.displayName):[...likes,currentUser.displayName]};
+    const idx=parseInt(btn.getAttribute('data-idx')),cardData=allData.find(d=>d.id===activeCardId),c=cardData.comments[idx],ls=c.likes||[],iLiked=ls.includes(currentUser.displayName);
+    const nc={...c,likes:iLiked?ls.filter(l=>l!==currentUser.displayName):[...ls,currentUser.displayName]};
     const ncs=[...cardData.comments];ncs[idx]=nc;
     try{await updateDoc(doc(db,'flashcards',activeCardId),{comments:ncs});}catch(e){console.error(e);}
   });
-  list.querySelectorAll('.del-comment-btn').forEach(btn=>btn.onclick=async()=>{
+  list.querySelectorAll('.del-comment-btn').forEach(btn=>btn.onclick=async e=>{
+    e.stopPropagation();
     const idx=parseInt(btn.getAttribute('data-idx')),cardData=allData.find(d=>d.id===activeCardId),cr=cardData.comments[idx],ct=detectLink(cr.text)==='text'?'筆記':'媒體';
     try{
       await updateDoc(doc(db,'flashcards',activeCardId),{comments:arrayRemove(cr)});
@@ -701,58 +820,75 @@ document.getElementById('commentModal').addEventListener('click',e=>{if(e.target
 
 // ── 測驗 ──
 const QUIZ_TOTAL=30;
-document.getElementById('quiz-start-btn').onclick=()=>{
-  if(!currentUser){showToast('請先登入','error');return;}if(allData.length===0){showToast('單字卡載入中','error');return;}
+document.getElementById('quiz-nav-btn').onclick=()=>{
+  if(!currentUser){showToast('請先登入','error');return;}
+  if(allData.length===0){showToast('單字卡載入中','error');return;}
   showQuizSetup();document.getElementById('quizModal').style.display='block';
 };
 function showQuizSetup(){
   document.getElementById('quiz-body').innerHTML=`
     <h3 style="margin-top:0;">🎯 測驗設定</h3>
-    <p style="font-size:0.85rem;color:#666;margin-bottom:6px;">選擇要考的部位（可複選，不選則考全部）</p>
+    <div class="quiz-section-label">選擇部位（可複選，不選則考全部）</div>
     <div class="quiz-region-list" id="quiz-region-chips">
-      ${allRegions.map(r=>`<div class="quiz-region-chip" data-rid="${r.id}">${r.name}</div>`).join('')}
+      ${allRegions.map(r=>`<div class="quiz-chip" data-rid="${r.id}">${r.name}</div>`).join('')}
+    </div>
+    <div class="quiz-section-label">特殊範圍</div>
+    <div class="quiz-region-list">
+      <div class="quiz-chip" data-special="收藏">🔖 我的收藏</div>
+      <div class="quiz-chip" data-special="愛心">❤️ 我的愛心</div>
     </div>
     <button class="submit-btn" id="quiz-go-btn">開始測驗</button>
     <button class="quiz-exit-btn" onclick="document.getElementById('quizModal').style.display='none'">取消</button>
   `;
-  document.querySelectorAll('.quiz-region-chip').forEach(chip=>chip.onclick=()=>chip.classList.toggle('selected'));
+  document.querySelectorAll('.quiz-chip[data-rid]').forEach(chip=>chip.onclick=()=>{
+    // 取消特殊選擇
+    document.querySelectorAll('.quiz-chip[data-special]').forEach(c=>c.classList.remove('selected'));
+    chip.classList.toggle('selected');
+  });
+  document.querySelectorAll('.quiz-chip[data-special]').forEach(chip=>chip.onclick=()=>{
+    // 特殊選擇互斥，且取消部位選擇
+    const wasSelected=chip.classList.contains('selected');
+    document.querySelectorAll('.quiz-chip').forEach(c=>c.classList.remove('selected'));
+    if(!wasSelected)chip.classList.add('selected');
+  });
   document.getElementById('quiz-go-btn').onclick=()=>{
-    const selected=[...document.querySelectorAll('.quiz-region-chip.selected')].map(c=>c.getAttribute('data-rid'));
-    let pool=selected.length>0?allData.filter(d=>selected.includes(String(d.region))):allData;
-    if(pool.length===0){showToast('此部位沒有單字卡','error');return;}
+    const special=document.querySelector('.quiz-chip[data-special].selected')?.getAttribute('data-special');
+    let pool;
+    if(special==='收藏')pool=allData.filter(d=>myBookmarks.has(d.id));
+    else if(special==='愛心')pool=allData.filter(d=>currentUser&&(d.likes||[]).includes(currentUser.uid));
+    else{
+      const selected=[...document.querySelectorAll('.quiz-chip[data-rid].selected')].map(c=>c.getAttribute('data-rid'));
+      pool=selected.length>0?allData.filter(d=>selected.includes(String(d.region))):allData;
+    }
+    if(pool.length===0){showToast('此範圍沒有單字卡','error');return;}
     const shuffled=[...pool].sort(()=>Math.random()-0.5).slice(0,Math.min(QUIZ_TOTAL,pool.length));
-    startQuiz(shuffled);
+    showQuizQ({questions:shuffled.map(d=>({id:d.id,en:d.en,ch:d.ch})),current:0,correct:0,wrong:0});
   };
-}
-function startQuiz(questions){
-  const qs=questions.map(d=>({id:d.id,en:d.en,ch:d.ch}));
-  showQuizQ({questions:qs,current:0,correct:0,wrong:0});
 }
 function showQuizQ(state){
   const q=state.questions[state.current],total=state.questions.length,prog=state.current;
   document.getElementById('quiz-body').innerHTML=`
-    <div class="quiz-progress"><span>第 ${prog+1} / ${total} 題</span><span>✅ ${state.correct} &nbsp; ❌ ${state.wrong}</span></div>
+    <div class="quiz-progress"><span>第 ${prog+1} / ${total} 題</span><span>✅ ${state.correct} ❌ ${state.wrong}</span></div>
     <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${(prog/total)*100}%"></div></div>
     <div class="quiz-question"><span class="quiz-type-label">看中文猜英文</span>${q.ch}</div>
     <div id="qar" class="quiz-answer-reveal">答案：<b>${q.en}</b></div>
     <button id="qsa" style="width:100%;padding:10px;background:#f0f2f5;border:none;border-radius:8px;cursor:pointer;margin-bottom:10px;font-size:0.88rem;">顯示答案</button>
     <div class="quiz-btns" id="qrb" style="display:none;">
-      <button class="quiz-btn-correct" id="qc">✅ 答對了</button>
-      <button class="quiz-btn-wrong" id="qw">❌ 答錯了</button>
+      <button class="quiz-btn-correct">✅ 答對了</button>
+      <button class="quiz-btn-wrong">❌ 答錯了</button>
     </div>
-    <button class="quiz-exit-btn" id="qe">結束測驗（不儲存進度）</button>
+    <button class="quiz-exit-btn">結束測驗</button>
   `;
   document.getElementById('qsa').onclick=()=>{document.getElementById('qar').style.display='block';document.getElementById('qsa').style.display='none';document.getElementById('qrb').style.display='flex';};
-  document.getElementById('qc').onclick=()=>{state.correct++;nextQ(state);};
-  document.getElementById('qw').onclick=()=>{state.wrong++;nextQ(state);};
-  document.getElementById('qe').onclick=()=>document.getElementById('quizModal').style.display='none';
+  document.querySelector('.quiz-btn-correct').onclick=()=>{state.correct++;state.current++;state.current>=state.questions.length?showQuizResult(state):showQuizQ(state);};
+  document.querySelector('.quiz-btn-wrong').onclick=()=>{state.wrong++;state.current++;state.current>=state.questions.length?showQuizResult(state):showQuizQ(state);};
+  document.querySelector('.quiz-exit-btn').onclick=()=>document.getElementById('quizModal').style.display='none';
 }
-function nextQ(state){state.current++;if(state.current>=state.questions.length)showQuizResult(state);else showQuizQ(state);}
 function showQuizResult(state){
   const pct=Math.round((state.correct/state.questions.length)*100);
   document.getElementById('quiz-body').innerHTML=`<div class="quiz-result"><p style="font-size:1.1rem;margin:0;">🎉 測驗完成！</p><div class="quiz-score">${state.correct} / ${state.questions.length}</div><div class="quiz-score-sub">正確率 ${pct}%</div><div style="margin-top:12px;font-size:0.88rem;color:#666;">${pct>=80?'太棒了！💪':pct>=60?'不錯，再加油 📚':'需要多複習喔 😊'}</div><div class="quiz-result-btns"><button onclick="window._quizAgain()" style="background:var(--teal);color:white;">再來一次</button><button onclick="document.getElementById('quizModal').style.display='none'" style="background:#eee;color:#333;">關閉</button></div></div>`;
 }
-window._quizAgain=()=>showQuizSetup();
+window._quizAgain=showQuizSetup;
 document.getElementById('quizModal').addEventListener('click',e=>{if(e.target.id==='quizModal')document.getElementById('quizModal').style.display='none';});
 </script>
 </body>
