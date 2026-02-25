@@ -344,24 +344,27 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 <div id="toast" class="toast"></div>
 
 <script type="module">
-// --- 請取代原本的 Firebase 初始化區塊 ---
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-// 重點：除了 getFirestore，還要多匯入 initializeFirestore 和 persistentLocalCache
+// 1. 確保匯入 Auth 模組，否則無法登入
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
     initializeFirestore, 
     persistentLocalCache, 
+    persistentMultipleTabManager,
     collection, 
     getDocs, 
     query, 
     where, 
     orderBy, 
     addDoc, 
+    deleteDoc,
+    doc,
+    setDoc,
     serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// 請確保這裡填入您正確的 Config 資料
 const firebaseConfig = {
-    // 這裡維持您原本的設定（apiKey, authDomain 等）
     apiKey: "AIzaSy...", 
     authDomain: "anatomy-...",
     projectId: "anatomy-...",
@@ -370,14 +373,19 @@ const firebaseConfig = {
     appId: "..."
 };
 
+// 初始化 App
 const app = initializeApp(firebaseConfig);
 
-// 修改重點：將原本的 const db = getFirestore(app); 改成以下寫法
-const db = initializeFirestore(app, {
-    localCache: persistentLocalCache() 
-});
+// 2. 初始化 Auth (這是登入功能的關鍵，不能漏掉)
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// --- 初始化結束，後續程式碼維持不變 ---
+// 3. 初始化 Firestore 並開啟快取
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+    })
+});
 let allData=[],currentTypeFilter=null,currentRegion=null,currentSpecial=null,currentUser=null,activeCardId=null,myBookmarks=new Set(),chatLoaded=false,allRegions=[],deleteModeOn=false,replyTo=null,ctxMsgId=null,ctxMsgUid=null;
 
 const SVG_HEART=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
