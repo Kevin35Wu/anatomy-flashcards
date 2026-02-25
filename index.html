@@ -344,14 +344,40 @@ main{margin-left:220px;flex-grow:1;min-height:100vh;display:flex;flex-direction:
 <div id="toast" class="toast"></div>
 
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import{getFirestore,collection,onSnapshot,doc,updateDoc,arrayUnion,arrayRemove,addDoc,query,orderBy,setDoc,getDoc,deleteDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import{getAuth,signInWithPopup,GoogleAuthProvider,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// --- 請取代原本的 Firebase 初始化區塊 ---
 
-const ADMIN_UID='XMxcwjPrj7VlcpNBrStyGKPAvL03';
-const cfg={apiKey:"AIzaSyB43JZQ7qXrcU_WkVHGEPeZdmicXcmjbq0",authDomain:"anatomy-dc089.firebaseapp.com",projectId:"anatomy-dc089",storageBucket:"anatomy-dc089.firebasestorage.app",messagingSenderId:"742909907454",appId:"1:742909907454:web:5afaaf70fc1b41247270af"};
-const app=initializeApp(cfg),db=getFirestore(app),auth=getAuth(),prov=new GoogleAuthProvider();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+// 重點：除了 getFirestore，還要多匯入 initializeFirestore 和 persistentLocalCache
+import { 
+    initializeFirestore, 
+    persistentLocalCache, 
+    collection, 
+    getDocs, 
+    query, 
+    where, 
+    orderBy, 
+    addDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+const firebaseConfig = {
+    // 這裡維持您原本的設定（apiKey, authDomain 等）
+    apiKey: "AIzaSy...", 
+    authDomain: "anatomy-...",
+    projectId: "anatomy-...",
+    storageBucket: "anatomy-...",
+    messagingSenderId: "...",
+    appId: "..."
+};
+
+const app = initializeApp(firebaseConfig);
+
+// 修改重點：將原本的 const db = getFirestore(app); 改成以下寫法
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache() 
+});
+
+// --- 初始化結束，後續程式碼維持不變 ---
 let allData=[],currentTypeFilter=null,currentRegion=null,currentSpecial=null,currentUser=null,activeCardId=null,myBookmarks=new Set(),chatLoaded=false,allRegions=[],deleteModeOn=false,replyTo=null,ctxMsgId=null,ctxMsgUid=null;
 
 const SVG_HEART=`<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
